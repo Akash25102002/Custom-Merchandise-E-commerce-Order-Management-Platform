@@ -38,6 +38,22 @@ app.use('/api/products', productRouter);
 app.get('/api/categories', getCategories);
 app.use('/api/orders', orderRouter);
 
+// API root welcome endpoint
+app.get('/api', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Custom Merchandise API Engine Active",
+    version: "1.0.0",
+    endpoints: {
+      auth: "/api/auth",
+      products: "/api/products",
+      categories: "/api/categories",
+      orders: "/api/orders",
+      health: "/health"
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
