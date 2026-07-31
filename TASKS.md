@@ -23,23 +23,23 @@
     - [x] Multi-Item Persistence & Duplication Protection
     - [x] Subtotal, Tax & Dynamic Cart Total Calculations
 
-- [ ] Feature 5: Checkout
-    - [ ] Address Selector & Coupon Validation
+- [x] Feature 5: Checkout
+    - [x] Address Selector & Coupon Validation
 
-- [ ] Feature 6: Payment Module
-    - [ ] Mock Payment Gateway & Razorpay Signature Verification
+- [x] Feature 6: Payment Module
+    - [x] Mock Payment Gateway & Razorpay Signature Verification
 
-- [ ] Feature 7: Orders
-    - [ ] Strict Sequential Workflow State Machine
+- [x] Feature 7: Orders Workflow
+    - [x] Strict Sequential Workflow State Machine
 
-- [ ] Feature 8: Shipping
-    - [ ] Courier Integration & Shipment Generation
+- [x] Feature 8: Shipping & Courier
+    - [x] Courier Integration & Shipment Generation
 
-- [ ] Feature 9: Tracking
-    - [ ] Live Milestone Timeline UI
+- [x] Feature 9: Live Order Tracking
+    - [x] Milestone Timeline UI
 
-- [ ] Feature 10: Admin Panel
-    - [ ] Executive Analytics Dashboard & Inventory Management
+- [x] Feature 10: Admin Panel
+    - [x] Executive Analytics Dashboard & Inventory Management
 
 - [ ] Feature 11: Analytics
     - [ ] Sales & Order Metrics Visualization
