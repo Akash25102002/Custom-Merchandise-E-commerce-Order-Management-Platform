@@ -216,3 +216,5 @@ For maximum graded value with minimal engineering effort, we recommend prioritiz
    - *Rationale*: Adds a `Coupon` model (`code`, `discountPercentage`, `expiresAt`) and evaluates discounts inside `Cart.recalculateTotals()`.
 4. **Docker Compose Setup (Medium Value / Low Effort)**
    - *Rationale*: A simple `docker-compose.yml` spinning up MongoDB, Server, and Client containers in one command.
+#   C u s t o m - M e r c h a n d i s e - E - c o m m e r c e - O r d e r - M a n a g e m e n t - P l a t f o r m  
+ 
