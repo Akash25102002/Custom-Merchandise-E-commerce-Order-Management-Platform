@@ -1,4 +1,4 @@
-<img width="1360" height="768" alt="Screenshot (252)" src="https://github.com/user-attachments/assets/26396639-f3bc-4013-872e-2af5a4692943" /># ThreadCraft — Custom Merchandise E-commerce & Order Management Platform
+# ThreadCraft — Custom Merchandise E-commerce & Order Management Platform
 
 A full-stack MERN application for a custom merchandise business. Customers
 browse products, customize artwork/prints, pay, and track orders through a
@@ -14,10 +14,19 @@ product, order, and fulfillment management.
 | | |
 |---|---|
 | **Register** <img width="1360" height="768" alt="Screenshot (251)" src="https://github.com/user-attachments/assets/fd97d877-8e75-4fec-a561-4cbc90b666e7" />
-| **Sign In (with one-click demo credentials)** ![Login](./screenshots/02-login.png) |
-| **Catalog** ![Catalog](./screenshots/03-catalog.png) | **Design Studio — product customizer** ![Customizer](./screenshots/04-customizer.png) |
-| **Cart — live server-recalculated totals** ![Cart](./screenshots/05-cart.png) | **Checkout** ![Checkout](./screenshots/06-checkout.png) |
-| **Order tracking timeline** ![Order Tracking](./screenshots/07-order-tracking.png) | **Admin fulfillment & analytics dashboard** ![Admin Dashboard](./screenshots/08-admin-dashboard.png) |
+| **Sign In <img width="1360" height="768" alt="Screenshot (252)" src="https://github.com/user-attachments/assets/1c1da288-8b00-403e-a10f-e302de7d527c" />
+<img width="1360" height="768" alt="Screenshot (252)" src="https://github.com/user-attachments/assets/5b7bc108-900a-4625-a5ef-ad3e080430e6" />
+(with one-click demo credentials)** ![Login](./screenshots/02-login.png) |![Uploading Screenshot (252).png…]()
+
+| **Catalog** 
+![Catalog](./screenshots/03-catalog.png) | **Design Studio — product customizer** <img width="1360" height="768" alt="Screenshot (253)" src="https://github.com/user-attachments/assets/2560a748-7558-47bb-8d16-061f43156925" />
+![Customizer](./screenshots/04-customizer.png) |
+| **Cart — <img width="1360" height="768" alt="Screenshot (255)" src="https://github.com/user-attachments/assets/f02d9c7d-1bda-4688-b31b-a10f545d9e5a" />
+live server-recalculated totals** ![Cart](./screenshots/05-cart.png) | **Checkout** <img width="1360" height="768" alt="Screenshot (256)" src="https://github.com/user-attachments/assets/01dc8541-c093-453a-a88f-437802849f61" />
+![Checkout](./screenshots/06-checkout.png) |
+| **Order tracking timeline** <img width="1360" height="768" alt="Screenshot (257)" src="https://github.com/user-attachments/assets/77168b70-5156-46e1-a961-8f653668b365" />
+![Order Tracking](./screenshots/07-order-tracking.png) | **Admin fulfillment & analytics dashboard** ![Uploading Screenshot (258).png…]()
+![Admin Dashboard](./screenshots/08-admin-dashboard.png) |
 
 ---
 
