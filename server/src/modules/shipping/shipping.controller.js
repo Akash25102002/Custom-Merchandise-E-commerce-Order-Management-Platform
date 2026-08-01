@@ -106,6 +106,18 @@ const getPublicTracking = catchAsync(async (req, res, next) => {
     shipment = await Shipping.findOne({
       $or: [{ trackingNumber: trackingId }, { shipmentId: trackingId }],
     }).populate('order', 'orderNumber status shippingAddress items totalAmount createdAt');
+
+    if (!shipment) {
+      order = await Order.findOne({
+        $or: [{ orderNumber: trackingId }, { shippingId: trackingId }],
+      });
+      if (order) {
+        shipment = await Shipping.findOne({ order: order._id }).populate(
+          'order',
+          'orderNumber status shippingAddress items totalAmount createdAt'
+        );
+      }
+    }
   } else {
     shipment =
       dbStore.orders.get(trackingId) ||
@@ -115,11 +127,41 @@ const getPublicTracking = catchAsync(async (req, res, next) => {
 
     if (shipment) {
       order = dbStore.orders.get(shipment.order) || Array.from(dbStore.orders.values()).find((o) => o._id === shipment.order);
+    } else {
+      order = Array.from(dbStore.orders.values()).find(
+        (o) => o.orderNumber === trackingId || o.shippingId === trackingId
+      );
+      if (order) {
+        shipment = Array.from(dbStore.orders.values()).find(
+          (s) => s.order === order._id || s.order === order.id
+        );
+      }
     }
   }
 
+  // If order exists but formal courier shipment record hasn't been created yet, return active order status
+  if (!shipment && order) {
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        courierName: 'Delhivery Surface Express',
+        trackingNumber: order.shippingId || `TRK-${order.orderNumber}`,
+        shipmentId: order.shippingId || `SHP-${order.orderNumber}`,
+        estimatedDeliveryDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
+        status: order.status,
+        trackingTimeline: (order.statusHistory || []).map((h) => ({
+          status: h.status,
+          location: 'Hub Center',
+          description: h.note || `Order status transitioned to ${h.status}`,
+          timestamp: h.timestamp || new Date(),
+        })),
+        orderNumber: order.orderNumber,
+      },
+    });
+  }
+
   if (!shipment) {
-    return next(new AppError('No shipment or tracking record found with that tracking ID', 404));
+    return next(new AppError('No shipment or tracking record found with that tracking ID or Order Number.', 404));
   }
 
   res.status(200).json({

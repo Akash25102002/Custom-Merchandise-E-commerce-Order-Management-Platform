@@ -38,11 +38,12 @@ const sendTokenResponse = async (user, statusCode, res) => {
   }
 
   // Options for HttpOnly refresh cookie (~7 days)
+  const isProduction = process.env.NODE_ENV === 'production';
   const cookieOptions = {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   };
 
   res.cookie('refreshToken', refreshToken, cookieOptions);
@@ -181,9 +182,12 @@ const logout = catchAsync(async (req, res, next) => {
     }
   }
 
+  const isProduction = process.env.NODE_ENV === 'production';
   res.cookie('refreshToken', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   });
 
   res.status(200).json({

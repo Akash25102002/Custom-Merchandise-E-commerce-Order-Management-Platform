@@ -4,12 +4,14 @@ import { Sparkles, ShoppingBag, Check, ShieldCheck, ArrowLeft, Star, PackageChec
 import { Button } from '../../components/Button';
 import { Badge } from '../../components/Badge';
 import { useAuthStore } from '../../store/authStore';
+import { useCartStore } from '../../store/cartStore';
 import api from '../../api/axios';
 
 export const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const fetchCart = useCartStore((state) => state.fetchCart);
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -77,17 +79,22 @@ export const ProductDetailPage = () => {
     setError('');
     setIsAdding(true);
 
+    const formattedColor = typeof selectedColor === 'string' 
+      ? { name: selectedColor, hex: '#FFFFFF' }
+      : { name: selectedColor?.name || 'White', hex: selectedColor?.hex || '#FFFFFF' };
+
     try {
       await api.post('/cart', {
         productId: product._id || product.id,
         size: selectedSize,
-        color: selectedColor,
+        color: formattedColor,
         quantity: Number(quantity),
         printType: selectedPrintType,
         printLocation,
         designImageUrl: artworkUrl,
       });
 
+      await fetchCart();
       navigate('/cart');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to add item to cart. Please check option selections.');

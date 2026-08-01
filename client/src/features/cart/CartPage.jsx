@@ -5,16 +5,18 @@ import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { Badge } from '../../components/Badge';
 import { useAuthStore } from '../../store/authStore';
+import { useCartStore } from '../../store/cartStore';
 import api from '../../api/axios';
 
 export const CartPage = () => {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { updateQuantity, removeItem, fetchCart: syncStoreCart } = useCartStore();
 
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchCart = async () => {
+  const loadCartData = async () => {
     if (!isAuthenticated) {
       setLoading(false);
       return;
@@ -23,6 +25,7 @@ export const CartPage = () => {
     try {
       const res = await api.get('/cart');
       setCart(res.data.data.cart);
+      await syncStoreCart();
     } catch (err) {
       console.error('Failed to fetch cart:', err);
     } finally {
@@ -31,7 +34,7 @@ export const CartPage = () => {
   };
 
   useEffect(() => {
-    fetchCart();
+    loadCartData();
   }, [isAuthenticated]);
 
   const handleUpdateQuantity = async (itemId, currentQty, delta) => {
@@ -41,7 +44,8 @@ export const CartPage = () => {
       return;
     }
     try {
-      const res = await api.put(`/cart/${itemId}`, { quantity: newQty });
+      await updateQuantity(itemId, newQty);
+      const res = await api.get('/cart');
       setCart(res.data.data.cart);
     } catch (err) {
       console.error('Failed to update cart item:', err);
@@ -50,7 +54,8 @@ export const CartPage = () => {
 
   const handleRemoveItem = async (itemId) => {
     try {
-      const res = await api.delete(`/cart/${itemId}`);
+      await removeItem(itemId);
+      const res = await api.get('/cart');
       setCart(res.data.data.cart);
     } catch (err) {
       console.error('Failed to remove cart item:', err);

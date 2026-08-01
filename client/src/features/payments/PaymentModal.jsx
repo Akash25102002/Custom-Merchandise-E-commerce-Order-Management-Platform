@@ -35,6 +35,7 @@ export const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess }) => {
         paymentId,
         razorpay_order_id,
         razorpay_payment_id,
+        razorpay_signature: dummySignature,
         signature: dummySignature,
         gateway,
         simulateFailure,

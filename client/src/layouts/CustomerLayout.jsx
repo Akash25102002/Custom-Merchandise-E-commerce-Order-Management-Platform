@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Palette, Shirt, User, LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
@@ -6,10 +6,16 @@ import { useCartStore } from '../store/cartStore';
 
 export const CustomerLayout = () => {
   const { user, isAuthenticated, logout } = useAuthStore();
-  const { cartItems, toggleCart } = useCartStore();
+  const { cartItems, fetchCart } = useCartStore();
   const navigate = useNavigate();
 
-  const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchCart();
+    }
+  }, [isAuthenticated, fetchCart]);
+
+  const totalCartCount = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
   const handleLogout = () => {
     logout();
@@ -55,10 +61,11 @@ export const CustomerLayout = () => {
 
           {/* User Controls & Cart */}
           <div className="flex items-center gap-4">
-            {/* Cart Button */}
-            <button
-              onClick={toggleCart}
-              className="relative p-2.5 rounded-xl bg-canvas border border-warm-grey-light hover:border-ink text-ink transition-all"
+            {/* Cart Link */}
+            <Link
+              to="/cart"
+              className="relative p-2.5 rounded-xl bg-canvas border border-warm-grey-light hover:border-ink text-ink transition-all flex items-center justify-center"
+              title="Shopping Cart"
             >
               <ShoppingBag className="w-5 h-5" />
               {totalCartCount > 0 && (
@@ -66,7 +73,7 @@ export const CustomerLayout = () => {
                   {totalCartCount}
                 </span>
               )}
-            </button>
+            </Link>
 
             {/* Auth User Menu */}
             {isAuthenticated ? (

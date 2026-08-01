@@ -160,9 +160,9 @@ const addToCart = catchAsync(async (req, res, next) => {
 
     const existingIndex = userCart.items.findIndex(
       (item) =>
-        (item.product._id === productId || item.product === productId) &&
+        ((item.product?._id || item.product?.id || item.product) === productId) &&
         item.size === size &&
-        item.color.name === color.name &&
+        (item.color?.name?.toLowerCase() === color?.name?.toLowerCase()) &&
         item.printType === printType &&
         item.printLocation === printLocation &&
         item.designImageUrl === designImageUrl
@@ -306,7 +306,13 @@ const uploadArtwork = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide an artwork image file (PNG, SVG, JPG, WEBP)', 400));
   }
 
-  const artworkUrl = `/uploads/${req.file.filename}`;
+  let artworkUrl = '';
+  if (req.file.buffer) {
+    const base64 = req.file.buffer.toString('base64');
+    artworkUrl = `data:${req.file.mimetype};base64,${base64}`;
+  } else {
+    artworkUrl = `/uploads/${req.file.filename}`;
+  }
 
   res.status(200).json({
     status: 'success',

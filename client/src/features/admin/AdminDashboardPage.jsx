@@ -23,16 +23,19 @@ const WORKFLOW_ORDER_STEPS = [
 export const AdminDashboardPage = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedProductToEdit, setSelectedProductToEdit] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const fetchDashboardStats = async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await api.get('/admin/dashboard-stats?threshold=15');
       setStats(res.data.data);
     } catch (err) {
       console.error('Failed to load dashboard stats:', err);
+      setError(err.response?.data?.message || 'Failed to connect to backend API for live analytics.');
     } finally {
       setLoading(false);
     }
@@ -52,6 +55,19 @@ export const AdminDashboardPage = () => {
       <div className="flex flex-col items-center justify-center p-16 gap-3">
         <div className="w-10 h-10 border-4 border-print-red border-t-transparent rounded-full animate-spin"></div>
         <p className="text-xs font-semibold text-warm-grey">Executing MongoDB Aggregation Analytics...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8 bg-print-red-light rounded-3xl border border-print-red/20 space-y-4 text-center animate-fadeIn">
+        <AlertTriangle className="w-8 h-8 text-print-red mx-auto" />
+        <h3 className="text-lg font-extrabold text-print-red">Failed to Load Dashboard Analytics</h3>
+        <p className="text-xs text-warm-grey max-w-md mx-auto">{error}</p>
+        <Button size="sm" onClick={fetchDashboardStats}>
+          Retry Analytics Connection
+        </Button>
       </div>
     );
   }

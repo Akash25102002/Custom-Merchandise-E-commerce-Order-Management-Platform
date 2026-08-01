@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
-import { Upload, Type, Move, RefreshCw, ShoppingCart, Sparkles, Image as ImageIcon, Check } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Upload, Type, Move, RefreshCw, ShoppingCart, Sparkles, Image as ImageIcon, Check, AlertCircle } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { Card } from '../../components/Card';
+import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../store/cartStore';
+import api from '../../api/axios';
 
 export const CustomizerStudioPage = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const productId = searchParams.get('product') || 'prod_1';
+
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const addItem = useCartStore((state) => state.addItem);
 
+  const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState({ name: 'White', hex: '#FFFFFF', mockupUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800' });
   const [selectedSize, setSelectedSize] = useState('L');
   const [customText, setCustomText] = useState('CUSTOM BRAND');
@@ -16,6 +25,29 @@ export const CustomizerStudioPage = () => {
   const [rotation, setRotation] = useState(0);
   const [artworkPreview, setArtworkPreview] = useState(null);
   const [activeTab, setActiveTab] = useState('text');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await api.get(`/products/${productId}`);
+        if (res.data?.data?.product) {
+          const p = res.data.data.product;
+          setProduct(p);
+          if (p.availableColors?.[0]) {
+            setSelectedColor(p.availableColors[0]);
+          }
+          if (p.availableSizes?.[0]) {
+            setSelectedSize(p.availableSizes[0]);
+          }
+        }
+      } catch (err) {
+        console.log('Using default merchandise customizer specs');
+      }
+    };
+    fetchProduct();
+  }, [productId]);
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -29,32 +61,35 @@ export const CustomizerStudioPage = () => {
     }
   };
 
-  const handleAddToCart = () => {
-    addItem({
-      product: {
-        _id: 'prod_1',
-        name: 'Premium Unisex Cotton Crewneck T-Shirt',
-        category: 't-shirt',
-      },
-      name: 'Custom Merchandise T-Shirt',
-      price: 599,
-      quantity: 1,
-      color: selectedColor,
-      size: selectedSize,
-      customization: {
-        artworkUrl: artworkPreview,
-        artworkType: artworkPreview ? 'uploaded' : 'preset_text',
-        textConfig: {
-          text: customText,
-          color: textColor,
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: { pathname: `/customizer?product=${productId}` } } });
+      return;
+    }
+
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      await addItem({
+        productId: product?._id || product?.id || productId,
+        size: selectedSize,
+        color: {
+          name: selectedColor.name || 'White',
+          hex: selectedColor.hex || '#FFFFFF',
         },
-        position: {
-          printArea: 'front',
-          scale,
-          rotate: rotation,
-        },
-      },
-    });
+        quantity: 1,
+        printType: product?.printTypes?.[0] || 'DTF',
+        printLocation: 'front',
+        designImageUrl: artworkPreview || '',
+      });
+
+      navigate('/cart');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to add customized item to cart.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -242,13 +277,20 @@ export const CustomizerStudioPage = () => {
             </div>
           </div>
 
+          {error && (
+            <div className="p-3 rounded-xl bg-print-red-light border border-print-red/30 text-print-red text-xs font-bold flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
           {/* Checkout / Add to Cart CTA */}
           <div className="pt-4 border-t border-warm-grey-light flex items-center justify-between gap-4">
             <div>
               <span className="text-xs text-warm-grey uppercase font-bold">Total Price</span>
-              <p className="text-2xl font-extrabold text-ink">₹599</p>
+              <p className="text-2xl font-extrabold text-ink">₹{product?.basePrice || 599}</p>
             </div>
-            <Button onClick={handleAddToCart} variant="primary" icon={ShoppingCart} size="lg">
+            <Button onClick={handleAddToCart} isLoading={isSubmitting} variant="primary" icon={ShoppingCart} size="lg">
               Add to Cart
             </Button>
           </div>

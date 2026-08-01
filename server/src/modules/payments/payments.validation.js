@@ -10,7 +10,10 @@ const createPaymentRules = [
 
 const verifyPaymentRules = [
   body('orderId').trim().notEmpty().withMessage('Order ID is required'),
-  body('paymentId').trim().notEmpty().withMessage('Payment ID is required'),
+  body('paymentId').optional().trim(),
+  body('razorpay_order_id').optional().trim(),
+  body('razorpay_payment_id').optional().trim(),
+  body('razorpay_signature').optional().trim(),
   body('signature').optional().trim(),
 ];
 

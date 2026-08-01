@@ -10,7 +10,7 @@ import api from '../../api/axios';
 export const PublicTrackingPage = () => {
   const { trackingId: urlTrackingId } = useParams();
 
-  const [inputTrackingId, setInputTrackingId] = useState(urlTrackingId || 'DELHIVERY987123');
+  const [inputTrackingId, setInputTrackingId] = useState(urlTrackingId || '');
   const [trackingData, setTrackingData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,7 +24,7 @@ export const PublicTrackingPage = () => {
       const res = await api.get(`/shipping/${idToFetch}`);
       setTrackingData(res.data.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'No active shipment found with that tracking number.');
+      setError(err.response?.data?.message || 'No active shipment found with that tracking number or order ID.');
       setTrackingData(null);
     } finally {
       setLoading(false);
@@ -34,8 +34,6 @@ export const PublicTrackingPage = () => {
   useEffect(() => {
     if (urlTrackingId) {
       fetchTracking(urlTrackingId);
-    } else {
-      fetchTracking('DELHIVERY987123');
     }
   }, [urlTrackingId]);
 
