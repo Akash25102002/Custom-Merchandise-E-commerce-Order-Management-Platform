@@ -1,12 +1,16 @@
 {
   "name": "custom-merchandise-monorepo",
   "version": "1.0.0",
-  "private": true,
+  "description": "Custom Merchandise E-commerce & Order Management Platform Monorepo",
+  "main": "server/src/server.js",
   "scripts": {
-    "dev": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
-    "build": "cd frontend && npm run build",
-    "start": "npm run build && cd backend && npm start",
-    "serve": "cd backend && npm start"
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "seed": "npm run seed --prefix server",
+    "build:client": "npm run build --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }

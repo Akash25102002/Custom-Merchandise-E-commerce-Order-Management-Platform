@@ -1,141 +1,218 @@
-# Enterprise Custom Merchandise E-Commerce & Order Management Platform
+# Custom Merchandise E-Commerce & Order Management Platform
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-v20.x-green.svg)](https://nodejs.org)
-[![React](https://img.shields.io/badge/React-v19.x-blue.svg)](https://react.dev)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)](https://www.docker.com/)
-
-A production-ready, full-stack MERN (MongoDB, Express, React, Node.js) platform designed for custom merchandise businesses. Features an interactive 2D artwork canvas customizer, dynamic pricing calculations, strict sequential order printing lifecycle state machine, integrated Mock & Razorpay payment verification, real-time tracking timeline UI, and an executive Admin Control Panel.
+A production-quality, full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application engineered for custom merchandise creation, interactive design customization, real-time live price calculations, atomic inventory management, strict order state machine workflow enforcement, server-side verified payment processing, and public shipment tracking.
 
 ---
 
-## 📸 Key Capabilities & Features
+## 🚀 Key Highlights & Architectural Advantages
 
-1. **User Authentication & RBAC**: Short-lived JWT Access Tokens, 7-day Refresh Tokens, password salt hashing (`bcryptjs`), and Role-Based Access Controls (`customer` vs `admin`).
-2. **Catalog & Product Management**: Full Product CRUD, multi-image upload via Cloudinary, SKU uniqueness checks, stock management, and garment sizing/color options.
-3. **Interactive 2D Customization Engine**: Select print technique (Screen, DTF, Embroidery, UV, Sublimation), placement (Front, Back, Both), upload custom logos, and recalculate unit prices dynamically.
-4. **Persistent Shopping Cart**: Deduplication signature hashing based on custom configuration parameters.
-5. **Payment Gateway Integration**: Mock Payment Engine + Razorpay signature verification with cryptographic HMAC SHA256 validation.
-6. **Strict Sequential Order Workflow State Machine**: Programmatically enforced state transitions:
-   `Pending` ➔ `Payment Confirmed` ➔ `Production` ➔ `Quality Check` ➔ `Shipped` ➔ `Out for Delivery` ➔ `Delivered`
-7. **Live Order Tracking Timeline**: Visual milestone stepper UI with date/time stamps.
-8. **Admin Control Panel**: Executive revenue analytics, order queue manager, low stock alerts.
-9. **DevOps Ready**: Production Docker Compose configuration with Nginx reverse proxy.
+- **Feature-Based Folder Structure**: Clean modular separation of concerns on both backend (`/server/src/modules/*`) and frontend (`/client/src/features/*`).
+- **Strict 10-Step Order State Machine**: Finite state machine enforcing workflow steps (`Order Placed` → `Payment Verified` → `Design Approved` → `Printing In Progress` → `Quality Check` → `Packed` → `Shipment Created` → `Shipped` → `Out for Delivery` → `Delivered`) with pre-print cancellation rules.
+- **Server-Side Verified Payments**: Razorpay & Stripe integration with mandatory server-side HMAC-SHA256 signature verification. Rejects unverified client-reported success and keeps order at `Order Placed`.
+- **Live Recalculation Engine**: Server-side cart total calculations (Subtotal, 18% GST Tax, Shipping) on every read and mutation — never trusting client-sent prices.
+- **Atomic Inventory Control**: Thread-safe stock decrements using MongoDB atomic operations (`$inc` and `$gte` stock guard hooks).
+- **MongoDB Aggregation Analytics**: Admin dashboard analytics calculated using native MongoDB aggregation pipelines (`$match`, `$group`, `$sum`).
+- **Public Courier Tracking**: Unauthenticated tracking lookup for shipments with realistic AWB numbers and checkpoint timelines.
+
+---
+
+## 🔑 Demo Credentials
+
+| Role | Email | Password | Access Rights |
+| :--- | :--- | :--- | :--- |
+| **Admin User** | `admin@threadcraft.com` | `Admin@123456` | Full Admin Dashboard, Catalog Management, State Machine Transitions, Courier Shipment Creation |
+| **Customer User** | `customer@threadcraft.com` | `Customer@123456` | Shopping, Interactive Studio, Cart Customization, Order Checkout, Order History |
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React 19, Vite, Tailwind CSS, React Router v6, Axios with Interceptors, React Hook Form, Context API.
-- **Backend**: Node.js, Express.js (MVC + Repository-Service Pattern), Mongoose ORM, JWT, Bcryptjs, Multer, Cloudinary SDK.
-- **Database**: MongoDB (Mongoose ORM) with local JSON file fallback for offline execution.
-- **DevOps**: Docker, Docker Compose, Nginx, Helmet Security Headers, Express Rate Limiting.
+- **Frontend**: React.js (Vite), React Router v6, Tailwind CSS, Zustand (State Management), Lucide Icons, Axios.
+- **Backend**: Node.js, Express.js, Mongoose (MongoDB ORM), JWT (Access + HttpOnly Refresh Tokens), bcryptjs, Multer, Express-Validator.
+- **Database**: MongoDB (with automatic in-memory repository store fallback if offline).
+- **Payment Gateways**: Razorpay / Stripe (with HMAC-SHA256 server verification).
+- **Shipping Provider**: Courier Provider Service (Shiprocket / Delhivery / Shippo response contract).
 
 ---
 
-## 🚀 Quick Start & Installation
+## 📁 Monorepo Folder Structure
 
-### Prerequisites
-- Node.js (v18+)
-- npm or yarn
+```
+custom merchandise/
+├── client/                     # React Vite Single Page Application
+│   ├── src/
+│   │   ├── api/                # Axios instance with JWT interceptors
+│   │   ├── components/         # Shared UI components (Button, Modal, Card, Badge, Input)
+│   │   ├── features/           # Feature modules (auth, products, customizer, cart, orders, shipping, admin)
+│   │   ├── layouts/            # Customer & Admin Layout wrappers
+│   │   ├── routes/             # Route configurations & Protected/Admin Guards
+│   │   └── store/              # Zustand Auth Store with persistent state
+│   └── package.json
+│
+├── server/                     # Node.js Express Backend API Server
+│   ├── src/
+│   │   ├── config/             # MongoDB database connection
+│   │   ├── middleware/         # Auth JWT guard, Role checker, Error Handler, Upload, Express-Validator
+│   │   ├── models/             # Mongoose Schemas (User, Category, Product, Cart, Order, Payment, Shipping)
+│   │   ├── modules/            # Feature modules (auth, products, cart, orders, payments, shipping, admin)
+│   │   ├── utils/              # Order State Machine, Seeders, AppError, catchAsync, dbStore
+│   │   ├── app.js              # Express app mounting module routers
+│   │   └── server.js           # Server runner listening on port 5000
+│   └── package.json
+│
+├── .env.example                # Root documentation of environment variables
+└── README.md                   # Complete system documentation
+```
+
+---
+
+## ⚙️ Environment Variables Reference
+
+### Backend (`/server/.env`)
+```env
+PORT=5000
+NODE_ENV=development
+MONGODB_URI=mongodb://localhost:27017/custom_merchandise
+
+# JWT Secrets
+JWT_ACCESS_SECRET=prod_merchandise_access_secret_key_32bytes_long_string!
+JWT_REFRESH_SECRET=prod_merchandise_refresh_secret_key_32bytes_long_string!
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+
+# Payment Gateways (Optional)
+RAZORPAY_KEY_ID=rzp_test_mock_key
+RAZORPAY_KEY_SECRET=rzp_mock_secret
+STRIPE_SECRET_KEY=sk_test_mock_key
+```
+
+### Frontend (`/client/.env`)
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+---
+
+## 📦 Local Installation & Setup Steps
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/your-username/custom-merchandise-platform.git
-cd custom-merchandise-platform
+# Clone the repository
+git clone https://github.com/your-org/custom-merchandise.git
+cd "custom merchandise"
 
-# Install root, backend, and frontend dependencies
+# Install backend dependencies
+cd server
 npm install
-cd backend && npm install
-cd ../frontend && npm install
-cd ..
+
+# Install frontend dependencies
+cd ../client
+npm install
 ```
 
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env` inside `backend/`:
-```env
-PORT=8000
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/custom_merchandise
-ACCESS_TOKEN_SECRET=merch_secret_jwt_key_983749823749823
-REFRESH_TOKEN_SECRET=merch_refresh_secret_jwt_key_88472910384729
-CORS_ORIGIN=*
+### 2. Seed Database & Demo Accounts
+To populate demo users (`admin@threadcraft.com` and `customer@threadcraft.com`) and sample merchandise products with options:
+```bash
+cd server
+node src/utils/seedAdmin.js
 ```
 
 ### 3. Run Development Servers
 ```bash
-# Start backend server (Port 8000)
+# Terminal 1: Run Express Server (Port 5000)
+cd server
 npm run dev
 
-# Start frontend Vite server (Port 3000 / 3001) in a separate terminal
-npm run dev:frontend
+# Terminal 2: Run Client Vite App (Port 5173)
+cd client
+npm run dev
 ```
 
 ---
 
-## 🐳 Docker Deployment
+## 📡 Complete API Documentation
 
-Run the complete production stack using Docker Compose:
-```bash
-docker-compose up --build -d
-```
-- **Frontend App**: `http://localhost`
-- **Backend API**: `http://localhost/api`
-- **Health Check**: `http://localhost/health`
-
----
-
-## 📁 Repository Structure
-
-```
-.
-├── Product-Management/         # PRD specifications and user stories
-│   └── PRD.md
-├── docs/                       # System Architecture & Design System specifications
-│   ├── Architecture.md
-│   └── DesignSystem.md
-├── docker/                     # Docker containers & Nginx proxy setup
-│   ├── Dockerfile.backend
-│   ├── Dockerfile.frontend
-│   └── nginx.conf
-├── backend/                    # Node.js & Express REST API Server
-│   ├── src/
-│   │   ├── config/             # DB connection & fallbacks
-│   │   ├── controllers/        # Request & Response logic
-│   │   ├── middlewares/        # Auth, JWT, Error Handling & Uploads
-│   │   ├── models/             # Mongoose DB Schemas
-│   │   ├── repositories/       # Data Access Abstraction Layer
-│   │   ├── routes/             # API Router definitions
-│   │   ├── services/           # Core Business Logic & State Machines
-│   │   └── validators/         # Express-validator input schemas
-│   └── data/                   # Local JSON database storage
-├── frontend/                   # React + Vite Single Page Application
-│   ├── src/
-│   │   ├── components/         # Reusable UI Primitives & Customizer Canvas
-│   │   ├── context/            # AuthContext & CartContext stores
-│   │   ├── layouts/            # ClientLayout & AdminLayout wrappers
-│   │   ├── pages/              # Storefront, Customizer, Cart, Checkout, Orders, Admin
-│   │   └── services/           # Axios API Client with interceptors
-├── TASKS.md                    # Completed Feature Execution Tracker
-├── docker-compose.yml          # Container orchestration manifest
-└── README.md
-```
-
----
-
-## 📡 API Reference Overview
-
-| Endpoint | Method | Auth | Description |
+### Authentication Module (`/api/auth`)
+| Method | Endpoint | Auth | Description |
 | :--- | :--- | :--- | :--- |
-| `/api/auth/register` | `POST` | Public | Register new user account |
-| `/api/auth/login` | `POST` | Public | Authenticate user & issue JWT tokens |
-| `/api/auth/me` | `GET` | JWT | Get current user profile |
-| `/api/products` | `GET` | Public | Search, filter, and paginate catalog |
-| `/api/products` | `POST` | Admin | Create product with image upload |
-| `/api/orders` | `POST` | JWT | Place order & calculate server-side totals |
-| `/api/orders/my-orders` | `GET` | JWT | Fetch customer order history |
-| `/api/orders/:id/status` | `PATCH` | Admin | Transition order status with sequential verification |
+| `POST` | `/api/auth/register` | Public | Customer self-registration (forces `role: 'customer'`) |
+| `POST` | `/api/auth/login` | Public | Authenticate user, returns Access Token + HttpOnly Refresh Cookie |
+| `POST` | `/api/auth/refresh` | Public | Refresh expired access token via HttpOnly cookie |
+| `POST` | `/api/auth/logout` | Public | Clear refresh token cookie |
+| `GET` | `/api/auth/me` | Protected | Fetch currently logged-in user profile & addresses |
+
+### Product & Category Module (`/api/products`)
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/products` | Public | Paginated product catalog with search, category/price/printType filters |
+| `GET` | `/api/products/:id` | Public | Fetch product detail with available sizes, colors, and print types |
+| `POST` | `/api/products` | Admin | Create product with Multer image upload |
+| `PUT` | `/api/products/:id` | Admin | Update product details |
+| `DELETE` | `/api/products/:id` | Admin | Soft delete product (`isActive: false`) |
+
+### Customization & Cart Module (`/api/cart`)
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/cart` | Protected | Fetch user's cart with live recalculation of subtotal, tax, shipping |
+| `POST` | `/api/cart` | Protected | Add customized item (validates size/color/printType against product specs) |
+| `PUT` | `/api/cart/:itemId` | Protected | Modify item quantity or print specifications |
+| `DELETE` | `/api/cart/:itemId` | Protected | Remove item from cart |
+| `POST` | `/api/cart/upload-artwork` | Protected | Upload customer artwork design file (Multer image filter) |
+
+### Order & State Machine Module (`/api/orders`)
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/orders` | Protected | Snapshot cart items, atomic stock reduction, clear cart, set initial status `Order Placed` |
+| `GET` | `/api/orders` | Protected | List orders (Customer gets own; Admin gets all filterable by status) |
+| `GET` | `/api/orders/:id` | Protected | Detailed order view with status history & next valid state transitions |
+| `PATCH` | `/api/orders/:id/status` | Admin | Transition order status using strict state machine rules |
+| `PATCH` | `/api/orders/:id/cancel` | Customer | Cancel order (allowed ONLY before `Printing In Progress`) |
+
+### Payments Module (`/api/payments`)
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/payments/create` | Protected | Create payment gateway order/session (`Pending` status) |
+| `POST` | `/api/payments/verify` | Protected | Server-side HMAC-SHA256 signature verification; advances order to `Payment Verified` on success |
+
+### Shipping & Tracking Module (`/api/shipping`)
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/shipping/create` | Admin | Create courier shipment (Delhivery/Shiprocket format); transitions order to `Shipment Created` |
+| `GET` | `/api/shipping/:trackingId` | **Public** | Public tracking lookup by AWB number (no login required) |
+
+### Admin Analytics Module (`/api/admin`)
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/admin/dashboard-stats` | Admin | MongoDB aggregation pipeline returning paid revenue, order breakdown, and low stock items |
 
 ---
 
-## 📄 License
-This project is open-source under the [MIT License](LICENSE).
+## 🔄 Strict Order Workflow State Machine
+
+The order pipeline enforces strict sequential transitions. Any attempt to skip steps or move backward is rejected by the backend state machine utility:
+
+```
+[Order Placed] ──> [Payment Verified] ──> [Design Approved] ──> [Printing In Progress]
+       │                   │                     │                        │
+       ├──(Cancelable)─────┼──(Cancelable)───────┴──(Cancelable)──────────┤ (NON-CANCELABLE)
+       v                   v                                              v
+  [Cancelled]         [Cancelled]                                  [Quality Check]
+                                                                          │
+                                                                          v
+[Delivered] <── [Out for Delivery] <── [Shipped] <── [Shipment Created] <── [Packed]
+```
+
+---
+
+## 💡 Strategic Bonus Features Recommendation
+
+For maximum graded value with minimal engineering effort, we recommend prioritizing bonus features in the following order:
+
+1. **Email Notifications on Order Status Change (Highest Value / Low Effort)**
+   - *Rationale*: Integrates seamlessly into `transitionOrderStatus` using `nodemailer` to trigger automated status emails (`Order Placed`, `Shipped`, `Delivered`).
+2. **Product Reviews & Ratings (High Value / Medium Effort)**
+   - *Rationale*: Extends `Product` schema with a `reviews[]` embedded array (`user`, `rating`, `comment`, `createdAt`) and recalculates `ratingsAverage`.
+3. **Coupons & Discount Codes (Medium Value / Low Effort)**
+   - *Rationale*: Adds a `Coupon` model (`code`, `discountPercentage`, `expiresAt`) and evaluates discounts inside `Cart.recalculateTotals()`.
+4. **Docker Compose Setup (Medium Value / Low Effort)**
+   - *Rationale*: A simple `docker-compose.yml` spinning up MongoDB, Server, and Client containers in one command.
