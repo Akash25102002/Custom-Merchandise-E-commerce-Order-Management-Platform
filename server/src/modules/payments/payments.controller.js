@@ -149,6 +149,7 @@ const verifyPayment = catchAsync(async (req, res, next) => {
     razorpay_payment_id,
     signatureReceived: !!signature,
     gateway,
+    keyIdPrefix: (process.env.RAZORPAY_KEY_ID || 'UNSET').substring(0, 9),
     simulateFailure,
   });
 
