@@ -44,8 +44,8 @@ export const RegisterPage = () => {
         password,
       });
 
-      const { user, accessToken } = response.data;
-      setAuth(user, accessToken);
+      const { user, accessToken, refreshToken } = response.data;
+      setAuth(user, accessToken, refreshToken);
 
       navigate('/shop', { replace: true });
     } catch (err) {

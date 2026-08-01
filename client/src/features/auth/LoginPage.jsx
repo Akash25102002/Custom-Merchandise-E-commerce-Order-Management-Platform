@@ -26,8 +26,8 @@ export const LoginPage = () => {
         password: passwordToSubmit,
       });
 
-      const { user, accessToken } = response.data;
-      setAuth(user, accessToken);
+      const { user, accessToken, refreshToken } = response.data;
+      setAuth(user, accessToken, refreshToken);
 
       const fromPath = location.state?.from?.pathname;
       if (fromPath && fromPath !== '/login') {

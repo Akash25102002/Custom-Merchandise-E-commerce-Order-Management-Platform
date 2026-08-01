@@ -6,9 +6,12 @@ export const useAuthStore = create((set) => ({
   isAuthenticated: !!localStorage.getItem('accessToken'),
   isLoading: false,
 
-  setAuth: (user, accessToken) => {
+  setAuth: (user, accessToken, refreshToken = null) => {
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('accessToken', accessToken);
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    }
     set({ user, accessToken, isAuthenticated: true });
   },
 
@@ -20,6 +23,7 @@ export const useAuthStore = create((set) => ({
   logout: () => {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     set({ user: null, accessToken: null, isAuthenticated: false });
   },
 
