@@ -85,6 +85,47 @@ const createPaymentOrder = catchAsync(async (req, res, next) => {
   const paymentId = `pay_${gateway}_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
   const keyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_mock_key';
 
+  let razorpayOrderId = null;
+  if (
+    gateway === 'razorpay' &&
+    process.env.RAZORPAY_KEY_ID &&
+    process.env.RAZORPAY_KEY_SECRET &&
+    !process.env.RAZORPAY_KEY_ID.includes('mock')
+  ) {
+    try {
+      const authHeader =
+        'Basic ' +
+        Buffer.from(
+          `${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`
+        ).toString('base64');
+      const rzpResponse = await fetch('https://api.razorpay.com/v1/orders', {
+        method: 'POST',
+        headers: {
+          Authorization: authHeader,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: Math.round(order.totalAmount * 100),
+          currency: 'INR',
+          receipt: order.orderNumber,
+          notes: {
+            customerName: req.user.name,
+            customerEmail: req.user.email,
+          },
+        }),
+      });
+      const rzpData = await rzpResponse.json();
+      if (rzpData.id) {
+        razorpayOrderId = rzpData.id;
+        console.log('✅ [Razorpay API]: Real Razorpay Order created:', razorpayOrderId);
+      } else if (rzpData.error) {
+        console.error('❌ [Razorpay API Error]:', rzpData.error.description);
+      }
+    } catch (rzpErr) {
+      console.error('⚠️ [Razorpay API Exception]:', rzpErr.message);
+    }
+  }
+
   let paymentRecord;
   if (dbStore.isMongoConnected()) {
     paymentRecord = await Payment.create({
@@ -116,8 +157,10 @@ const createPaymentOrder = catchAsync(async (req, res, next) => {
       gateway,
       key_id: keyId,
       paymentId: paymentRecord.paymentId,
-      order_id: order.orderNumber,
-      amount: order.totalAmount,
+      order_id: razorpayOrderId || order.orderNumber,
+      razorpay_order_id: razorpayOrderId || order.orderNumber,
+      amount: Math.round(order.totalAmount * 100),
+      amount_display: order.totalAmount,
       currency: 'INR',
       notes: {
         customerName: req.user.name,

@@ -4,6 +4,20 @@ import { Modal } from '../../components/Modal';
 import { Button } from '../../components/Button';
 import api from '../../api/axios';
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess }) => {
   const [gateway, setGateway] = useState('razorpay');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -24,21 +38,93 @@ export const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess }) => {
         gateway,
       });
 
-      const { paymentId } = sessionRes.data.session;
-      const razorpay_order_id = order.orderNumber;
-      const razorpay_payment_id = `pay_verified_${Date.now()}`;
-      const dummySignature = `sig_verified_${Date.now()}`;
+      const session = sessionRes.data.session;
+      const { paymentId, key_id, amount, currency, notes, razorpay_order_id } = session;
 
-      // 2. Call Server-Side Verification Endpoint (NEVER trust client!)
+      // Handle explicit simulation test button
+      if (simulateFailure) {
+        const verifyRes = await api.post('/payments/verify', {
+          orderId,
+          paymentId,
+          gateway,
+          simulateFailure: true,
+        });
+        if (verifyRes.data.status === 'success') {
+          onPaymentSuccess(verifyRes.data.data.order);
+          onClose();
+        }
+        return;
+      }
+
+      // Check if real Razorpay Checkout is available
+      const scriptLoaded = await loadRazorpayScript();
+      if (gateway === 'razorpay' && scriptLoaded && window.Razorpay && key_id && !key_id.includes('mock')) {
+        const options = {
+          key: key_id,
+          amount: amount || Math.round(order.totalAmount * 100),
+          currency: currency || 'INR',
+          name: 'ThreadCraft Custom Merchandise',
+          description: `Order #${order.orderNumber}`,
+          order_id: razorpay_order_id,
+          prefill: {
+            name: notes?.customerName || '',
+            email: notes?.customerEmail || '',
+          },
+          theme: {
+            color: '#0F172A',
+          },
+          handler: async (response) => {
+            try {
+              const verifyRes = await api.post('/payments/verify', {
+                orderId,
+                paymentId,
+                razorpay_order_id: response.razorpay_order_id || razorpay_order_id || order.orderNumber,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                signature: response.razorpay_signature,
+                gateway: 'razorpay',
+              });
+
+              if (verifyRes.data.status === 'success') {
+                onPaymentSuccess(verifyRes.data.data.order);
+                onClose();
+              }
+            } catch (verifyErr) {
+              setError(
+                verifyErr.response?.data?.message ||
+                  'Payment signature verification failed. Order status remains at "Order Placed".'
+              );
+            } finally {
+              setIsProcessing(false);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              setIsProcessing(false);
+            },
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+          setError(response.error?.description || 'Razorpay Payment Failed. Order remains at "Order Placed".');
+          setIsProcessing(false);
+        });
+        rzp.open();
+        return;
+      }
+
+      // Fallback Authorization / Standard Test Authorization Mode
+      const dummySignature = `sig_verified_${Date.now()}`;
       const verifyRes = await api.post('/payments/verify', {
         orderId,
         paymentId,
-        razorpay_order_id,
-        razorpay_payment_id,
+        razorpay_order_id: razorpay_order_id || order.orderNumber,
+        razorpay_payment_id: `pay_verified_${Date.now()}`,
         razorpay_signature: dummySignature,
         signature: dummySignature,
         gateway,
-        simulateFailure,
+        simulateFailure: false,
       });
 
       if (verifyRes.data.status === 'success') {
