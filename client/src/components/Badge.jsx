@@ -2,17 +2,17 @@ import React from 'react';
 
 export const Badge = ({ children, variant = 'neutral', className = '' }) => {
   const variants = {
-    neutral: 'bg-slate-800 text-slate-300 border-slate-700',
-    success: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-    warning: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-    danger: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-    info: 'bg-sky-500/10 text-sky-400 border-sky-500/30',
-    purple: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
+    neutral: 'bg-warm-grey-subtle text-ink border-warm-grey/30',
+    success: 'bg-thread-green-light text-thread-green border-thread-green/30 font-bold',
+    warning: 'bg-gold-light text-gold-hover border-gold/40 font-bold',
+    danger: 'bg-print-red-light text-print-red border-print-red/30 font-bold',
+    info: 'bg-warm-grey-subtle text-ink border-warm-grey/30',
+    gold: 'bg-gold-light text-gold-hover border-gold/40 font-bold',
   };
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${variants[variant]} ${className}`}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${variants[variant] || variants.neutral} ${className}`}
     >
       {children}
     </span>

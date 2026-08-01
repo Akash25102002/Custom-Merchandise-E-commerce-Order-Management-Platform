@@ -105,6 +105,31 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
   }
 });
 
+const getCustomers = catchAsync(async (req, res, next) => {
+  const User = require('../../models/User');
+
+  if (dbStore.isMongoConnected()) {
+    const customers = await User.find({ role: 'customer' }).select('-password');
+    return res.status(200).json({
+      status: 'success',
+      results: customers.length,
+      data: { customers },
+    });
+  } else {
+    const customers = Array.from(dbStore.users.values())
+      .filter((u) => u.role === 'customer')
+      .map(({ password, refreshToken, ...rest }) => rest);
+
+    return res.status(200).json({
+      status: 'success',
+      results: customers.length,
+      data: { customers },
+    });
+  }
+});
+
 module.exports = {
   getDashboardStats,
+  getCustomers,
 };
+

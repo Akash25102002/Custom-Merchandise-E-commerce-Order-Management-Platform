@@ -81,8 +81,8 @@ export const CheckoutPage = () => {
   if (loadingCart) {
     return (
       <div className="flex flex-col items-center justify-center p-16 gap-3">
-        <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-xs font-semibold text-slate-400">Loading Checkout Order Summary...</p>
+        <div className="w-10 h-10 border-4 border-print-red border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs font-semibold text-warm-grey">Loading Checkout Order Summary...</p>
       </div>
     );
   }
@@ -91,10 +91,10 @@ export const CheckoutPage = () => {
 
   if (items.length === 0 && !createdOrder) {
     return (
-      <div className="glass-panel p-12 text-center rounded-3xl space-y-4 max-w-md mx-auto my-8">
-        <ShoppingBag className="w-12 h-12 text-slate-600 mx-auto" />
-        <h3 className="text-xl font-bold text-white">Your Cart is Empty</h3>
-        <p className="text-xs text-slate-400">Add customizable merchandise items to your cart before proceeding to checkout.</p>
+      <div className="bg-white p-12 text-center rounded-3xl space-y-4 max-w-md mx-auto my-8 border border-warm-grey-light shadow-sm">
+        <ShoppingBag className="w-12 h-12 text-warm-grey mx-auto" />
+        <h3 className="text-xl font-extrabold text-ink">Your Cart is Empty</h3>
+        <p className="text-xs text-warm-grey">Add customizable merchandise items to your cart before proceeding to checkout.</p>
         <Link to="/products">
           <Button size="md">Browse Catalog</Button>
         </Link>
@@ -107,10 +107,10 @@ export const CheckoutPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-white">Checkout & Order Review</h1>
-          <p className="text-xs text-slate-400">Provide shipping address details and place your merchandise order.</p>
+          <h1 className="text-3xl font-extrabold text-ink">Checkout & Order Review</h1>
+          <p className="text-xs text-warm-grey">Provide shipping address details and place your merchandise order.</p>
         </div>
-        <Link to="/cart" className="inline-flex items-center gap-2 text-xs font-bold text-sky-400 hover:underline">
+        <Link to="/cart" className="inline-flex items-center gap-2 text-xs font-bold text-ink hover:underline">
           <ArrowLeft className="w-4 h-4" /> Back to Cart
         </Link>
       </div>
@@ -118,14 +118,14 @@ export const CheckoutPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Shipping Form Column */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="glass-panel p-8 rounded-3xl border border-slate-800 space-y-6">
-            <div className="flex items-center gap-2 border-b border-slate-800 pb-4">
-              <Truck className="w-5 h-5 text-sky-400" />
-              <h2 className="text-lg font-bold text-white">Shipping Address Details</h2>
+          <div className="bg-white p-8 rounded-3xl border border-warm-grey-light space-y-6 shadow-sm">
+            <div className="flex items-center gap-2 border-b border-warm-grey-light pb-4">
+              <Truck className="w-5 h-5 text-ink" />
+              <h2 className="text-lg font-extrabold text-ink">Shipping Address Details</h2>
             </div>
 
             {error && (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold flex items-center gap-2">
+              <div className="p-3.5 rounded-xl bg-print-red-light border border-print-red/30 text-print-red text-xs font-bold flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -183,8 +183,8 @@ export const CheckoutPage = () => {
                 />
               </div>
 
-              <div className="pt-4 border-t border-slate-800">
-                <Button type="submit" fullWidth isLoading={isSubmitting} size="lg" icon={ArrowRight}>
+              <div className="pt-4 border-t border-warm-grey-light">
+                <Button type="submit" variant="primary" fullWidth isLoading={isSubmitting} size="lg" icon={ArrowRight}>
                   Place Order & Open Payment Gateway (₹{cart?.grandTotal || 0})
                 </Button>
               </div>
@@ -194,45 +194,45 @@ export const CheckoutPage = () => {
 
         {/* Items Snapshot Summary */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-3xl border border-slate-800 space-y-6 sticky top-28">
-            <h3 className="font-bold text-white text-lg border-b border-slate-800 pb-3">Items Snapshot</h3>
+          <div className="bg-white p-6 rounded-3xl border border-warm-grey-light space-y-6 sticky top-28 shadow-sm">
+            <h3 className="font-extrabold text-ink text-lg border-b border-warm-grey-light pb-3">Items Snapshot</h3>
 
             <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
               {items.map((item) => (
-                <div key={item._id || item.id} className="flex items-center gap-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
+                <div key={item._id || item.id} className="flex items-center gap-3 bg-canvas p-3 rounded-2xl border border-warm-grey-light">
                   <img
                     src={item.product?.images?.[0] || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800'}
                     alt={item.product?.name}
                     className="w-14 h-14 rounded-xl object-cover"
                   />
                   <div className="flex-1 text-xs space-y-0.5">
-                    <h4 className="font-bold text-white line-clamp-1">{item.product?.name || 'Custom Product'}</h4>
-                    <p className="text-slate-400">
+                    <h4 className="font-extrabold text-ink line-clamp-1">{item.product?.name || 'Custom Product'}</h4>
+                    <p className="text-warm-grey">
                       {item.size} | {item.color?.name} | Qty: {item.quantity}
                     </p>
-                    <p className="text-sky-400 font-semibold">{item.printType} ({item.printLocation})</p>
+                    <p className="text-ink font-bold">{item.printType} ({item.printLocation})</p>
                   </div>
-                  <span className="font-extrabold text-white text-sm">₹{item.lineTotal}</span>
+                  <span className="font-extrabold text-ink text-sm">₹{item.lineTotal}</span>
                 </div>
               ))}
             </div>
 
-            <div className="space-y-2 pt-3 border-t border-slate-800 text-xs text-slate-300">
+            <div className="space-y-2 pt-3 border-t border-warm-grey-light text-xs text-ink font-bold">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span className="text-warm-grey font-medium">Subtotal</span>
                 <span>₹{cart?.subtotal || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span>GST Tax (18%)</span>
+                <span className="text-warm-grey font-medium">GST Tax (18%)</span>
                 <span>₹{cart?.tax || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span>Express Shipping</span>
-                <span className="text-emerald-400">{cart?.shippingEstimate === 0 ? 'FREE' : `₹${cart?.shippingEstimate || 0}`}</span>
+                <span className="text-warm-grey font-medium">Express Shipping</span>
+                <span className="text-thread-green font-extrabold">{cart?.shippingEstimate === 0 ? 'FREE' : `₹${cart?.shippingEstimate || 0}`}</span>
               </div>
-              <div className="flex justify-between font-extrabold text-sm text-white pt-2 border-t border-slate-800">
+              <div className="flex justify-between font-extrabold text-sm text-ink pt-2 border-t border-warm-grey-light">
                 <span>Grand Total</span>
-                <span className="text-sky-400 text-base">₹{cart?.grandTotal || 0}</span>
+                <span className="text-ink text-base">₹{cart?.grandTotal || 0}</span>
               </div>
             </div>
           </div>

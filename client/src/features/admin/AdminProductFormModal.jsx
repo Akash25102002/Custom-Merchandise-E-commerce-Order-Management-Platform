@@ -105,7 +105,7 @@ export const AdminProductFormModal = ({ isOpen, onClose, productToEdit, onSaveSu
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold flex items-center gap-2">
+          <div className="p-3.5 rounded-xl bg-print-red-light border border-print-red/30 text-print-red text-xs font-bold flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -151,11 +151,11 @@ export const AdminProductFormModal = ({ isOpen, onClose, productToEdit, onSaveSu
 
         {/* Category & Description */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">Category</label>
+          <label className="text-xs font-extrabold uppercase tracking-wider text-ink">Category</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 text-sm text-slate-100 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full bg-canvas border border-warm-grey-light text-xs font-bold text-ink rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-ink"
           >
             <option value="">Select Category</option>
             {categories.map((c) => (
@@ -167,29 +167,29 @@ export const AdminProductFormModal = ({ isOpen, onClose, productToEdit, onSaveSu
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">Description</label>
+          <label className="text-xs font-extrabold uppercase tracking-wider text-ink">Description</label>
           <textarea
             rows="3"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Detailed description of fabric GSM, fit, and print area specifications..."
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full bg-canvas border border-warm-grey-light rounded-xl p-3 text-xs font-bold text-ink placeholder-warm-grey/60 focus:outline-none focus:ring-2 focus:ring-ink"
             required
           />
         </div>
 
         {/* Image Upload Preview */}
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">Product Images</label>
+          <label className="text-xs font-extrabold uppercase tracking-wider text-ink">Product Images</label>
           <div className="flex items-center gap-4">
             {imagePreview && (
-              <div className="w-20 h-20 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 shrink-0">
+              <div className="w-20 h-20 rounded-xl overflow-hidden border border-warm-grey-light bg-canvas shrink-0">
                 <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
               </div>
             )}
-            <label className="flex-1 flex items-center justify-center p-4 border-2 border-dashed border-slate-800 hover:border-sky-500/50 rounded-xl cursor-pointer bg-slate-900/50 transition-colors">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                <Upload className="w-4 h-4 text-sky-400" />
+            <label className="flex-1 flex items-center justify-center p-4 border-2 border-dashed border-warm-grey-light hover:border-ink rounded-xl cursor-pointer bg-canvas transition-colors">
+              <div className="flex items-center gap-2 text-xs font-bold text-warm-grey">
+                <Upload className="w-4 h-4 text-ink" />
                 <span>Upload Product Image Files</span>
               </div>
               <input type="file" multiple accept="image/*" onChange={handleImageChange} className="hidden" />
@@ -197,11 +197,11 @@ export const AdminProductFormModal = ({ isOpen, onClose, productToEdit, onSaveSu
           </div>
         </div>
 
-        <div className="pt-4 flex justify-end gap-3 border-t border-slate-800">
+        <div className="pt-4 flex justify-end gap-3 border-t border-warm-grey-light">
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" variant="primary" isLoading={isLoading}>
             {productToEdit ? 'Update Product' : 'Create Product'}
           </Button>
         </div>

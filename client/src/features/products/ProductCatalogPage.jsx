@@ -43,15 +43,14 @@ export const ProductCatalogPage = () => {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Hero Header */}
-      <div className="glass-panel p-8 rounded-3xl border border-slate-800 text-center space-y-4 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 text-xs font-semibold border border-sky-500/20">
-          <Sparkles className="w-3.5 h-3.5" /> Premium Merchandise Apparel & Gifts
+      <div className="bg-white p-8 rounded-3xl border border-warm-grey-light text-center space-y-4 shadow-sm">
+        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warm-grey-subtle text-ink text-xs font-bold border border-warm-grey-light">
+          <Sparkles className="w-3.5 h-3.5 text-print-red" /> Premium Merchandise Apparel & Gifts
         </span>
-        <h1 className="text-4xl font-extrabold tracking-tight text-white">
+        <h1 className="text-4xl font-extrabold tracking-tight text-ink">
           Customizable Merchandise Catalog
         </h1>
-        <p className="text-slate-400 max-w-2xl mx-auto text-sm">
+        <p className="text-warm-grey max-w-2xl mx-auto text-sm">
           Select any base merchandise product below to launch our interactive 2D Canvas Customizer Tool. Upload artwork, position print logos, add custom typography, and place orders.
         </p>
       </div>
@@ -61,29 +60,29 @@ export const ProductCatalogPage = () => {
         {mockProducts.map((p) => (
           <Card key={p._id} className="flex flex-col justify-between group">
             <div className="space-y-4">
-              <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-900">
+              <div className="relative rounded-xl overflow-hidden aspect-square bg-canvas border border-warm-grey-light">
                 <img
                   src={p.image}
                   alt={p.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-slate-950/80 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-sky-400 border border-slate-800">
+                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-white/90 text-[10px] uppercase font-extrabold tracking-wider text-ink border border-warm-grey-light">
                   {p.category}
                 </span>
               </div>
               <div>
-                <h3 className="font-bold text-slate-100 text-base line-clamp-1">{p.name}</h3>
-                <p className="text-xs text-slate-400">{p.colorsCount} Color Options</p>
+                <h3 className="font-extrabold text-ink text-base line-clamp-1">{p.name}</h3>
+                <p className="text-xs text-warm-grey font-medium">{p.colorsCount} Color Options</p>
               </div>
             </div>
 
-            <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
+            <div className="pt-4 mt-4 border-t border-warm-grey-light flex items-center justify-between">
               <div>
-                <span className="text-[10px] text-slate-500 uppercase font-semibold">Starts at</span>
-                <p className="text-lg font-extrabold text-white">₹{p.basePrice}</p>
+                <span className="text-[10px] text-warm-grey uppercase font-bold">Starts at</span>
+                <p className="text-lg font-extrabold text-ink">₹{p.basePrice}</p>
               </div>
               <Link to={`/customizer?product=${p._id}`}>
-                <Button size="sm" icon={Sparkles}>
+                <Button size="sm" variant="primary" icon={Sparkles}>
                   Customize
                 </Button>
               </Link>

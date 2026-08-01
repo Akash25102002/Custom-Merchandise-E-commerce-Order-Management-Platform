@@ -35,7 +35,6 @@ export const PublicTrackingPage = () => {
     if (urlTrackingId) {
       fetchTracking(urlTrackingId);
     } else {
-      // Fetch default sample tracking info
       fetchTracking('DELHIVERY987123');
     }
   }, [urlTrackingId]);
@@ -49,35 +48,35 @@ export const PublicTrackingPage = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-fadeIn py-4">
       {/* Header */}
-      <div className="glass-panel p-8 rounded-3xl border border-slate-800 text-center space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-sky-500/25">
-          <Truck className="w-6 h-6" />
+      <div className="bg-white p-8 rounded-3xl border border-warm-grey-light text-center space-y-4 shadow-sm">
+        <div className="w-12 h-12 rounded-2xl bg-ink flex items-center justify-center text-canvas mx-auto shadow-md">
+          <Truck className="w-6 h-6 text-canvas" />
         </div>
-        <h1 className="text-3xl font-extrabold text-white">Public Merchandise Tracker</h1>
-        <p className="text-xs text-slate-400 max-w-lg mx-auto">
+        <h1 className="text-3xl font-extrabold text-ink">Public Merchandise Tracker</h1>
+        <p className="text-xs text-warm-grey max-w-lg mx-auto">
           Enter your shipment tracking ID or courier AWB number to check real-time delivery status. No login required.
         </p>
 
         {/* Public Search Input Form */}
         <form onSubmit={handleSearch} className="max-w-md mx-auto flex items-center gap-2 pt-2">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-warm-grey absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="e.g. DELHIVERY987123"
               value={inputTrackingId}
               onChange={(e) => setInputTrackingId(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+              className="w-full bg-canvas border border-warm-grey-light rounded-xl pl-10 pr-4 py-2.5 text-xs text-ink font-bold placeholder-warm-grey/60 focus:outline-none focus:ring-2 focus:ring-ink"
             />
           </div>
-          <Button type="submit" isLoading={loading} size="sm">
+          <Button type="submit" isLoading={loading} variant="primary" size="sm">
             Track Package
           </Button>
         </form>
       </div>
 
       {error && (
-        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold text-center">
+        <div className="p-4 rounded-2xl bg-print-red-light border border-print-red/30 text-print-red text-xs font-bold text-center">
           {error}
         </div>
       )}
@@ -86,16 +85,16 @@ export const PublicTrackingPage = () => {
       {trackingData && (
         <div className="space-y-6">
           <Card className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-warm-grey-light">
               <div>
-                <span className="text-[10px] text-slate-500 uppercase font-semibold">Courier Provider</span>
-                <h2 className="text-xl font-extrabold text-white">{trackingData.courierName}</h2>
-                <p className="text-xs text-sky-400 font-mono font-bold mt-0.5">AWB: {trackingData.trackingNumber}</p>
+                <span className="text-[10px] text-warm-grey uppercase font-bold">Courier Provider</span>
+                <h2 className="text-xl font-extrabold text-ink">{trackingData.courierName}</h2>
+                <p className="text-xs text-ink font-mono font-bold mt-0.5">AWB: {trackingData.trackingNumber}</p>
               </div>
 
               <div>
-                <span className="text-[10px] text-slate-500 uppercase font-semibold">Estimated Delivery Date</span>
-                <p className="text-sm font-bold text-emerald-400 flex items-center gap-1.5 mt-0.5">
+                <span className="text-[10px] text-warm-grey uppercase font-bold">Estimated Delivery Date</span>
+                <p className="text-sm font-extrabold text-thread-green flex items-center gap-1.5 mt-0.5">
                   <Calendar className="w-4 h-4" />
                   {new Date(trackingData.estimatedDeliveryDate).toLocaleDateString(undefined, {
                     weekday: 'short',
@@ -115,25 +114,25 @@ export const PublicTrackingPage = () => {
 
             {/* Courier Tracking Timeline */}
             <div className="space-y-4">
-              <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-sky-400" /> Carrier Checkpoint Events
+              <h3 className="font-extrabold text-ink text-sm flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-ink" /> Carrier Checkpoint Events
               </h3>
 
               <div className="space-y-3">
                 {(trackingData.trackingTimeline || []).map((evt, idx) => (
-                  <div key={idx} className="flex items-start gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80">
-                    <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 shrink-0">
+                  <div key={idx} className="flex items-start gap-4 bg-canvas p-4 rounded-2xl border border-warm-grey-light">
+                    <div className="p-2 rounded-xl bg-thread-green-light text-thread-green shrink-0">
                       <CheckCircle2 className="w-4 h-4" />
                     </div>
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-slate-200 text-xs">{evt.status}</h4>
-                        <span className="text-[10px] text-slate-500 font-medium">
+                        <h4 className="font-extrabold text-ink text-xs">{evt.status}</h4>
+                        <span className="text-[10px] text-warm-grey font-bold">
                           {new Date(evt.timestamp).toLocaleString()}
                         </span>
                       </div>
-                      <p className="text-xs text-sky-400 font-semibold">{evt.location}</p>
-                      <p className="text-xs text-slate-400">{evt.description}</p>
+                      <p className="text-xs text-ink font-bold">{evt.location}</p>
+                      <p className="text-xs text-warm-grey">{evt.description}</p>
                     </div>
                   </div>
                 ))}

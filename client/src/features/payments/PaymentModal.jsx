@@ -58,24 +58,24 @@ export const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess }) => {
     <Modal isOpen={isOpen} onClose={onClose} title="Secure Payment Gateway" maxWidth="max-w-lg">
       <div className="space-y-6">
         {/* Payment Header & Info */}
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+        <div className="p-4 rounded-2xl bg-canvas border border-warm-grey-light space-y-2">
           <div className="flex justify-between items-baseline">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Order Reference</span>
-            <span className="text-sm font-bold text-sky-400">{order.orderNumber}</span>
+            <span className="text-xs text-warm-grey font-bold uppercase">Order Reference</span>
+            <span className="text-sm font-extrabold text-ink">{order.orderNumber}</span>
           </div>
           <div className="flex justify-between items-baseline">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Total Amount Due</span>
-            <span className="text-2xl font-extrabold text-white">₹{order.totalAmount}</span>
+            <span className="text-xs text-warm-grey font-bold uppercase">Total Amount Due</span>
+            <span className="text-2xl font-extrabold text-ink">₹{order.totalAmount}</span>
           </div>
         </div>
 
         {error && (
-          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold space-y-2">
+          <div className="p-3.5 rounded-xl bg-print-red-light border border-print-red/30 text-print-red text-xs font-bold space-y-2">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
-            <p className="text-[11px] text-rose-300 font-normal">
+            <p className="text-[11px] text-warm-grey-dark font-semibold">
               Order remains at "Order Placed". You can safely retry payment below.
             </p>
           </div>
@@ -83,14 +83,14 @@ export const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess }) => {
 
         {/* Gateway Selection Tabs */}
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">Select Gateway Mode</label>
+          <label className="text-xs font-extrabold uppercase tracking-wider text-ink">Select Gateway Mode</label>
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => setGateway('razorpay')}
               className={`p-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                 gateway === 'razorpay'
-                  ? 'bg-sky-500/10 text-sky-400 border-sky-500/40 shadow-md'
-                  : 'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700'
+                  ? 'bg-ink text-canvas border-ink shadow-sm'
+                  : 'bg-canvas text-warm-grey border-warm-grey-light hover:border-ink hover:text-ink'
               }`}
             >
               <CreditCard className="w-4 h-4" />
@@ -100,8 +100,8 @@ export const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess }) => {
               onClick={() => setGateway('stripe')}
               className={`p-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                 gateway === 'stripe'
-                  ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/40 shadow-md'
-                  : 'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700'
+                  ? 'bg-ink text-canvas border-ink shadow-sm'
+                  : 'bg-canvas text-warm-grey border-warm-grey-light hover:border-ink hover:text-ink'
               }`}
             >
               <CreditCard className="w-4 h-4" />
@@ -115,6 +115,7 @@ export const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess }) => {
           <Button
             onClick={() => handleVerify(false)}
             isLoading={isProcessing}
+            variant="primary"
             fullWidth
             size="lg"
             icon={ShieldCheck}
@@ -126,14 +127,14 @@ export const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess }) => {
             type="button"
             onClick={() => handleVerify(true)}
             disabled={isProcessing}
-            className="w-full text-center text-xs text-rose-400 hover:text-rose-300 font-semibold py-2 border border-rose-500/20 hover:bg-rose-500/10 rounded-xl transition-colors"
+            className="w-full text-center text-xs text-print-red font-bold py-2 border border-print-red/30 hover:bg-print-red-light rounded-xl transition-colors"
           >
             ⚡ Test Payment Verification Failure (Isolate Error State)
           </button>
         </div>
 
-        <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 font-semibold pt-1">
-          <Lock className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="flex items-center justify-center gap-2 text-[11px] text-warm-grey font-bold pt-1">
+          <Lock className="w-3.5 h-3.5 text-thread-green" />
           <span>Server-Side Signature & Webhook Verification Enforced</span>
         </div>
       </div>

@@ -79,7 +79,6 @@ export const AdminOrdersPage = () => {
 
     try {
       if (nextStatus === 'Shipment Created') {
-        // Must use shipping create endpoint
         await api.post('/shipping/create', { orderId });
       } else {
         await api.patch(`/orders/${orderId}/status`, {
@@ -106,17 +105,17 @@ export const AdminOrdersPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white">Order Fulfillment Control Center</h1>
-          <p className="text-sm text-slate-400">Enforce strict production workflow transitions and monitor customer order pipelines.</p>
+          <h1 className="text-3xl font-extrabold text-ink">Order Fulfillment Control Center</h1>
+          <p className="text-sm text-warm-grey">Enforce strict production workflow transitions and monitor customer order pipelines.</p>
         </div>
 
         {/* Filter Dropdown */}
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-sky-400" />
+          <Filter className="w-4 h-4 text-ink" />
           <select
             value={selectedStatusFilter}
             onChange={(e) => setSelectedStatusFilter(e.target.value)}
-            className="bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="bg-white border border-warm-grey-light text-xs font-bold text-ink rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ink"
           >
             <option value="">All Statuses</option>
             {WORKFLOW_STEPS.map((s) => (
@@ -129,15 +128,15 @@ export const AdminOrdersPage = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="glass-panel rounded-3xl border border-slate-800 overflow-hidden">
+      <div className="bg-white rounded-3xl border border-warm-grey-light overflow-hidden shadow-sm">
         {loading ? (
-          <div className="p-12 text-center text-xs text-slate-400">Loading Fulfillment Pipeline...</div>
+          <div className="p-12 text-center text-xs font-semibold text-warm-grey">Loading Fulfillment Pipeline...</div>
         ) : orders.length === 0 ? (
-          <div className="p-12 text-center text-xs text-slate-400">No orders found matching filter criteria.</div>
+          <div className="p-12 text-center text-xs font-semibold text-warm-grey">No orders found matching filter criteria.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-300">
-              <thead className="bg-slate-900/80 text-xs uppercase font-bold text-slate-400 border-b border-slate-800">
+            <table className="w-full text-left text-sm text-ink">
+              <thead className="bg-canvas text-xs uppercase font-extrabold text-warm-grey border-b border-warm-grey-light">
                 <tr>
                   <th className="px-6 py-4">Order Number</th>
                   <th className="px-6 py-4">Placed Date</th>
@@ -148,28 +147,28 @@ export const AdminOrdersPage = () => {
                   <th className="px-6 py-4 text-right">Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-warm-grey-light">
                 {orders.map((ord) => {
                   const validNextSteps = ALLOWED_TRANSITIONS_MAP[ord.status] || [];
                   const isPacked = ord.status === 'Packed';
                   return (
-                    <tr key={ord._id || ord.id} className="hover:bg-slate-900/40 transition-colors">
-                      <td className="px-6 py-4 font-bold text-sky-400">{ord.orderNumber}</td>
-                      <td className="px-6 py-4 text-xs text-slate-400">
+                    <tr key={ord._id || ord.id} className="hover:bg-canvas transition-colors">
+                      <td className="px-6 py-4 font-extrabold text-ink">{ord.orderNumber}</td>
+                      <td className="px-6 py-4 text-xs font-bold text-warm-grey">
                         {new Date(ord.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 font-semibold text-slate-300">
+                      <td className="px-6 py-4 font-bold text-ink">
                         {ord.items?.length || 0} items
                       </td>
-                      <td className="px-6 py-4 font-extrabold text-white">₹{ord.totalAmount}</td>
+                      <td className="px-6 py-4 font-extrabold text-ink">₹{ord.totalAmount}</td>
                       <td className="px-6 py-4">
                         <Badge
                           variant={
-                            ord.status === 'Delivered'
+                            ['Delivered', 'Payment Verified'].includes(ord.status)
                               ? 'success'
                               : ord.status === 'Cancelled'
                               ? 'danger'
-                              : 'info'
+                              : 'gold'
                           }
                         >
                           {ord.status}
@@ -181,7 +180,7 @@ export const AdminOrdersPage = () => {
                         {isPacked ? (
                           <button
                             onClick={() => handleUpdateStatus(ord._id || ord.id, 'Shipment Created')}
-                            className="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-sky-500/20"
+                            className="px-3 py-1.5 rounded-xl bg-ink hover:bg-black text-canvas text-xs font-bold flex items-center gap-1.5 shadow-sm"
                           >
                             <Truck className="w-3.5 h-3.5" />
                             <span>Create Shipment</span>
@@ -190,19 +189,19 @@ export const AdminOrdersPage = () => {
                           <select
                             onChange={(e) => handleUpdateStatus(ord._id || ord.id, e.target.value)}
                             defaultValue=""
-                            className="bg-slate-900 border border-sky-500/40 text-xs font-bold text-sky-400 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer"
+                            className="bg-canvas border border-warm-grey-light text-xs font-bold text-ink rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-ink cursor-pointer"
                           >
                             <option value="" disabled>
                               Move to Next Step...
                             </option>
                             {validNextSteps.map((ns) => (
-                              <option key={ns} value={ns} className="text-slate-100 bg-slate-950">
+                              <option key={ns} value={ns} className="text-ink bg-white">
                                 👉 {ns}
                               </option>
                             ))}
                           </select>
                         ) : (
-                          <span className="text-[11px] font-semibold text-slate-500 italic">
+                          <span className="text-[11px] font-bold text-warm-grey italic">
                             Terminal State ({ord.status})
                           </span>
                         )}
@@ -211,7 +210,7 @@ export const AdminOrdersPage = () => {
                       <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => handleOpenDetail(ord)}
-                          className="p-2 rounded-xl text-sky-400 border border-sky-500/20 hover:bg-sky-500/10 transition-colors"
+                          className="p-2 rounded-xl text-ink border border-warm-grey-light hover:bg-warm-grey-subtle transition-colors"
                           title="View Full Order Timeline"
                         >
                           <Eye className="w-4 h-4" />
@@ -236,7 +235,7 @@ export const AdminOrdersPage = () => {
         >
           <div className="space-y-6">
             {error && (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold">
+              <div className="p-3.5 rounded-xl bg-print-red-light border border-print-red/30 text-print-red text-xs font-bold">
                 {error}
               </div>
             )}
@@ -247,26 +246,26 @@ export const AdminOrdersPage = () => {
 
               {/* Specs & Address */}
               <div className="space-y-4">
-                <div className="glass-card p-4 rounded-2xl space-y-2 text-xs">
-                  <h4 className="font-bold text-white text-sm border-b border-slate-800 pb-1">Customer Address</h4>
-                  <p className="text-slate-200 font-semibold">{selectedOrder.shippingAddress?.fullName}</p>
-                  <p className="text-slate-400">{selectedOrder.shippingAddress?.street}</p>
-                  <p className="text-slate-400">
+                <div className="bg-canvas p-4 rounded-2xl border border-warm-grey-light space-y-2 text-xs">
+                  <h4 className="font-extrabold text-ink text-sm border-b border-warm-grey-light pb-1">Customer Address</h4>
+                  <p className="text-ink font-bold text-sm">{selectedOrder.shippingAddress?.fullName}</p>
+                  <p className="text-warm-grey font-medium">{selectedOrder.shippingAddress?.street}</p>
+                  <p className="text-warm-grey font-medium">
                     {selectedOrder.shippingAddress?.city}, {selectedOrder.shippingAddress?.state} - {selectedOrder.shippingAddress?.postalCode}
                   </p>
-                  <p className="text-sky-400">Phone: {selectedOrder.shippingAddress?.phone}</p>
+                  <p className="text-ink font-mono font-bold">Phone: {selectedOrder.shippingAddress?.phone}</p>
                 </div>
 
                 {selectedOrder.shippingId && (
-                  <div className="glass-card p-4 rounded-2xl space-y-1 border-sky-500/30 bg-sky-500/5">
-                    <h4 className="font-bold text-sky-400 text-xs flex items-center gap-1.5">
+                  <div className="bg-canvas p-4 rounded-2xl space-y-1 border border-warm-grey-light">
+                    <h4 className="font-extrabold text-ink text-xs flex items-center gap-1.5">
                       <Truck className="w-4 h-4" /> Courier Shipment AWB
                     </h4>
-                    <p className="text-xs font-mono font-bold text-white">{selectedOrder.shippingId}</p>
+                    <p className="text-xs font-mono font-extrabold text-ink">{selectedOrder.shippingId}</p>
                     <Link
                       to={`/track/${selectedOrder.shippingId}`}
                       target="_blank"
-                      className="inline-block text-[11px] font-bold text-sky-400 hover:underline pt-1"
+                      className="inline-block text-[11px] font-bold text-ink hover:underline pt-1"
                     >
                       View Public Tracking Page ↗
                     </Link>

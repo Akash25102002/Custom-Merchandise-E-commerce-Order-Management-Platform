@@ -8,5 +8,6 @@ router.use(protect);
 router.use(restrictTo('admin'));
 
 router.get('/dashboard-stats', adminController.getDashboardStats);
+router.get('/customers', adminController.getCustomers);
 
 module.exports = router;

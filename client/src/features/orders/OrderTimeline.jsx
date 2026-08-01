@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Clock, CircleDot, AlertCircle, Ban } from 'lucide-react';
+import { CheckCircle2, CircleDot, Ban } from 'lucide-react';
 
 const WORKFLOW_STEPS = [
   'Order Placed',
@@ -17,12 +17,12 @@ const WORKFLOW_STEPS = [
 export const OrderTimeline = ({ currentStatus, statusHistory = [] }) => {
   if (currentStatus === 'Cancelled') {
     return (
-      <div className="glass-card p-6 rounded-2xl border border-rose-500/30 bg-rose-500/5 space-y-3">
-        <div className="flex items-center gap-2 text-rose-400 font-bold text-base">
+      <div className="p-6 rounded-2xl border border-print-red/30 bg-print-red-light space-y-3">
+        <div className="flex items-center gap-2 text-print-red font-extrabold text-base">
           <Ban className="w-5 h-5" />
           <span>Order Cancelled</span>
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-warm-grey-dark">
           This order was cancelled prior to production printing. If you have questions, please contact customer support.
         </p>
       </div>
@@ -32,16 +32,15 @@ export const OrderTimeline = ({ currentStatus, statusHistory = [] }) => {
   const currentIndex = WORKFLOW_STEPS.indexOf(currentStatus);
 
   return (
-    <div className="glass-panel p-6 rounded-3xl border border-slate-800 space-y-6">
-      <h3 className="font-bold text-white text-base border-b border-slate-800 pb-3">
+    <div className="bg-white p-6 rounded-3xl border border-warm-grey-light space-y-6">
+      <h3 className="font-extrabold text-ink text-base border-b border-warm-grey-light pb-3">
         Merchandise Production & Shipping Timeline
       </h3>
 
-      <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-800">
+      <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-warm-grey-light">
         {WORKFLOW_STEPS.map((step, idx) => {
           const isCompleted = idx < currentIndex;
           const isCurrent = idx === currentIndex;
-          const isPending = idx > currentIndex;
 
           // Find history entry if available
           const historyEntry = statusHistory.find((h) => h.status === step);
@@ -52,18 +51,18 @@ export const OrderTimeline = ({ currentStatus, statusHistory = [] }) => {
               <div
                 className={`absolute -left-[27px] top-0.5 w-6 h-6 rounded-full flex items-center justify-center transition-all z-10 ${
                   isCompleted
-                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
+                    ? 'bg-thread-green text-white shadow-md'
                     : isCurrent
-                    ? 'bg-sky-500 text-white ring-4 ring-sky-500/20 animate-pulse'
-                    : 'bg-slate-900 text-slate-600 border border-slate-800'
+                    ? 'bg-gold text-white ring-4 ring-gold/20 animate-pulse'
+                    : 'bg-warm-grey-subtle text-warm-grey border border-warm-grey-light'
                 }`}
               >
                 {isCompleted ? (
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle2 className="w-4 h-4 text-white" />
                 ) : isCurrent ? (
-                  <CircleDot className="w-3.5 h-3.5" />
+                  <CircleDot className="w-3.5 h-3.5 text-white" />
                 ) : (
-                  <div className="w-2 h-2 rounded-full bg-slate-700"></div>
+                  <div className="w-2 h-2 rounded-full bg-warm-grey/50"></div>
                 )}
               </div>
 
@@ -73,29 +72,29 @@ export const OrderTimeline = ({ currentStatus, statusHistory = [] }) => {
                   <h4
                     className={`text-sm font-bold transition-colors ${
                       isCompleted
-                        ? 'text-slate-200'
+                        ? 'text-thread-green'
                         : isCurrent
-                        ? 'text-sky-400 font-extrabold'
-                        : 'text-slate-500'
+                        ? 'text-gold-hover font-extrabold'
+                        : 'text-warm-grey'
                     }`}
                   >
                     {step}
                   </h4>
                   {historyEntry && (
-                    <span className="text-[10px] font-semibold text-slate-500">
+                    <span className="text-[10px] font-semibold text-warm-grey">
                       {new Date(historyEntry.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   )}
                 </div>
 
                 {isCurrent && (
-                  <p className="text-xs text-sky-400/90 font-medium mt-0.5">
+                  <p className="text-xs text-gold font-bold mt-0.5">
                     Active Stage: {historyEntry?.note || 'In Progress'}
                   </p>
                 )}
 
                 {isCompleted && historyEntry?.note && (
-                  <p className="text-[11px] text-slate-400 mt-0.5">{historyEntry.note}</p>
+                  <p className="text-[11px] text-warm-grey mt-0.5">{historyEntry.note}</p>
                 )}
               </div>
             </div>

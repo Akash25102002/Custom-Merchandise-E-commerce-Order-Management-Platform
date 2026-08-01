@@ -20,6 +20,7 @@ import RegisterPage from '../features/auth/RegisterPage';
 import AdminDashboardPage from '../features/admin/AdminDashboardPage';
 import AdminProductListPage from '../features/admin/AdminProductListPage';
 import AdminOrdersPage from '../features/admin/AdminOrdersPage';
+import AdminCustomersPage from '../features/admin/AdminCustomersPage';
 
 export const AppRoutes = () => {
   return (
@@ -79,7 +80,7 @@ export const AppRoutes = () => {
         <Route path="dashboard" element={<AdminDashboardPage />} />
         <Route path="products" element={<AdminProductListPage />} />
         <Route path="orders" element={<AdminOrdersPage />} />
-        <Route path="customers" element={<AdminDashboardPage />} />
+        <Route path="customers" element={<AdminCustomersPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 

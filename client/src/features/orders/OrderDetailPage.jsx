@@ -65,16 +65,16 @@ export const OrderDetailPage = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-16 gap-3">
-        <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-xs font-semibold text-slate-400">Loading Order Timeline & Details...</p>
+        <div className="w-10 h-10 border-4 border-print-red border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs font-semibold text-warm-grey">Loading Order Timeline & Details...</p>
       </div>
     );
   }
 
   if (!order) {
     return (
-      <div className="glass-panel p-12 text-center rounded-3xl space-y-4">
-        <h3 className="text-xl font-bold text-white">Order Not Found</h3>
+      <div className="bg-white p-12 text-center rounded-3xl space-y-4 border border-warm-grey-light">
+        <h3 className="text-xl font-extrabold text-ink">Order Not Found</h3>
         <Link to="/orders">
           <Button size="sm">Return to Orders List</Button>
         </Link>
@@ -88,16 +88,16 @@ export const OrderDetailPage = () => {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Back Button */}
-      <Link to="/orders" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-sky-400 transition-colors">
+      <Link to="/orders" className="inline-flex items-center gap-2 text-xs font-bold text-warm-grey hover:text-ink transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Order History
       </Link>
 
       {/* Header */}
-      <div className="glass-panel p-8 rounded-3xl border border-slate-800 flex flex-wrap items-center justify-between gap-6">
+      <div className="bg-white p-8 rounded-3xl border border-warm-grey-light flex flex-wrap items-center justify-between gap-6 shadow-sm">
         <div>
-          <span className="text-xs text-slate-500 uppercase font-semibold">Order Reference Number</span>
-          <h1 className="text-3xl font-extrabold text-sky-400">{order.orderNumber}</h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <span className="text-xs text-warm-grey uppercase font-bold">Order Reference Number</span>
+          <h1 className="text-3xl font-extrabold text-ink">{order.orderNumber}</h1>
+          <p className="text-xs text-warm-grey font-medium mt-1">
             Placed on {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString()}
           </p>
         </div>
@@ -105,11 +105,11 @@ export const OrderDetailPage = () => {
         <div className="flex items-center gap-3">
           <Badge
             variant={
-              order.status === 'Delivered'
+              ['Delivered', 'Payment Verified'].includes(order.status)
                 ? 'success'
                 : order.status === 'Cancelled'
                 ? 'danger'
-                : 'info'
+                : 'gold'
             }
             className="text-sm py-1.5 px-4"
           >
@@ -119,6 +119,7 @@ export const OrderDetailPage = () => {
           {needsPayment && (
             <Button
               onClick={() => setIsPaymentModalOpen(true)}
+              variant="primary"
               size="sm"
               icon={CreditCard}
             >
@@ -141,7 +142,7 @@ export const OrderDetailPage = () => {
       </div>
 
       {error && (
-        <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold">
+        <div className="p-3.5 rounded-xl bg-print-red-light border border-print-red/30 text-print-red text-xs font-bold">
           {error}
         </div>
       )}
@@ -157,23 +158,23 @@ export const OrderDetailPage = () => {
         <div className="lg:col-span-5 space-y-6">
           {/* Shipping Courier Specs Card (If Created) */}
           {shipping && (
-            <div className="glass-panel p-6 rounded-3xl border border-sky-500/30 bg-sky-500/5 space-y-3">
+            <div className="bg-canvas p-6 rounded-3xl border border-warm-grey-light space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-sky-400 text-sm flex items-center gap-2">
+                <h3 className="font-extrabold text-ink text-sm flex items-center gap-2">
                   <Truck className="w-4 h-4" /> Courier Shipment Active
                 </h3>
                 <Link
                   to={`/track/${shipping.trackingNumber}`}
                   target="_blank"
-                  className="text-[11px] font-bold text-sky-400 hover:underline flex items-center gap-1"
+                  className="text-[11px] font-bold text-ink underline flex items-center gap-1"
                 >
                   Public Tracker <ExternalLink className="w-3 h-3" />
                 </Link>
               </div>
-              <div className="text-xs text-slate-300 space-y-1">
-                <p className="font-bold text-white text-base">{shipping.courierName}</p>
-                <p className="font-mono text-sky-300 font-bold">Tracking Number: {shipping.trackingNumber}</p>
-                <p className="text-emerald-400 font-bold flex items-center gap-1 pt-1">
+              <div className="text-xs text-ink space-y-1">
+                <p className="font-extrabold text-ink text-base">{shipping.courierName}</p>
+                <p className="font-mono text-ink font-bold">Tracking Number: {shipping.trackingNumber}</p>
+                <p className="text-thread-green font-bold flex items-center gap-1 pt-1">
                   <Calendar className="w-3.5 h-3.5" /> Est. Delivery:{' '}
                   {new Date(shipping.estimatedDeliveryDate).toLocaleDateString()}
                 </p>
@@ -182,27 +183,27 @@ export const OrderDetailPage = () => {
           )}
 
           {/* Shipping Address Card */}
-          <div className="glass-panel p-6 rounded-3xl border border-slate-800 space-y-3">
-            <h3 className="font-bold text-white text-base border-b border-slate-800 pb-2 flex items-center gap-2">
-              <Truck className="w-4 h-4 text-sky-400" /> Destination Shipping Address
+          <div className="bg-white p-6 rounded-3xl border border-warm-grey-light space-y-3 shadow-sm">
+            <h3 className="font-extrabold text-ink text-base border-b border-warm-grey-light pb-2 flex items-center gap-2">
+              <Truck className="w-4 h-4 text-ink" /> Destination Shipping Address
             </h3>
-            <div className="text-xs text-slate-300 space-y-1">
-              <p className="font-bold text-white text-sm">{order.shippingAddress?.fullName}</p>
-              <p>{order.shippingAddress?.street}</p>
-              <p>
+            <div className="text-xs text-ink space-y-1">
+              <p className="font-extrabold text-ink text-sm">{order.shippingAddress?.fullName}</p>
+              <p className="text-warm-grey font-medium">{order.shippingAddress?.street}</p>
+              <p className="text-warm-grey font-medium">
                 {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.postalCode}
               </p>
-              <p className="text-sky-400 font-mono">Phone: {order.shippingAddress?.phone}</p>
+              <p className="text-ink font-mono font-bold">Phone: {order.shippingAddress?.phone}</p>
             </div>
           </div>
 
           {/* Items Snapshot Card */}
-          <div className="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
-            <h3 className="font-bold text-white text-base border-b border-slate-800 pb-2">Purchased Merchandise</h3>
+          <div className="bg-white p-6 rounded-3xl border border-warm-grey-light space-y-4 shadow-sm">
+            <h3 className="font-extrabold text-ink text-base border-b border-warm-grey-light pb-2">Purchased Merchandise</h3>
             <div className="space-y-3">
               {(order.items || []).map((item, idx) => (
-                <div key={idx} className="flex items-center gap-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
-                  <div className="w-12 h-12 rounded-xl bg-slate-900 overflow-hidden shrink-0 border border-slate-800">
+                <div key={idx} className="flex items-center gap-3 bg-canvas p-3 rounded-2xl border border-warm-grey-light">
+                  <div className="w-12 h-12 rounded-xl bg-white overflow-hidden shrink-0 border border-warm-grey-light">
                     <img
                       src={item.designImageUrl || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800'}
                       alt={item.name}
@@ -210,33 +211,33 @@ export const OrderDetailPage = () => {
                     />
                   </div>
                   <div className="flex-1 text-xs space-y-0.5">
-                    <h4 className="font-bold text-white">{item.name}</h4>
-                    <p className="text-slate-400">
+                    <h4 className="font-extrabold text-ink">{item.name}</h4>
+                    <p className="text-warm-grey font-medium">
                       Size: {item.size} | Color: {item.color?.name} | Qty: {item.quantity}
                     </p>
-                    <p className="text-sky-400 font-semibold">{item.printType} ({item.printLocation})</p>
+                    <p className="text-ink font-bold">{item.printType} ({item.printLocation})</p>
                   </div>
-                  <span className="font-extrabold text-white text-sm">₹{item.lineTotal}</span>
+                  <span className="font-extrabold text-ink text-sm">₹{item.lineTotal}</span>
                 </div>
               ))}
             </div>
 
-            <div className="pt-3 border-t border-slate-800 space-y-2 text-xs text-slate-300">
+            <div className="pt-3 border-t border-warm-grey-light space-y-2 text-xs text-ink font-bold">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span className="text-warm-grey font-medium">Subtotal</span>
                 <span>₹{order.subtotal}</span>
               </div>
               <div className="flex justify-between">
-                <span>Tax (18% GST)</span>
+                <span className="text-warm-grey font-medium">Tax (18% GST)</span>
                 <span>₹{order.tax}</span>
               </div>
               <div className="flex justify-between">
-                <span>Shipping</span>
+                <span className="text-warm-grey font-medium">Shipping</span>
                 <span>₹{order.shippingCharge}</span>
               </div>
-              <div className="flex justify-between font-extrabold text-sm text-white pt-2 border-t border-slate-800">
+              <div className="flex justify-between font-extrabold text-sm text-ink pt-2 border-t border-warm-grey-light">
                 <span>Total Amount Paid</span>
-                <span className="text-sky-400 text-base">₹{order.totalAmount}</span>
+                <span className="text-ink text-base">₹{order.totalAmount}</span>
               </div>
             </div>
           </div>

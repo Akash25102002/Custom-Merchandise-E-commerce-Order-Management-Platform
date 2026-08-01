@@ -59,12 +59,12 @@ export const CartPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="glass-panel p-12 text-center rounded-3xl space-y-4 max-w-lg mx-auto my-12">
-        <ShoppingBag className="w-12 h-12 text-sky-400 mx-auto" />
-        <h2 className="text-2xl font-extrabold text-white">Your Shopping Cart</h2>
-        <p className="text-xs text-slate-400">Please sign in to view your customized merchandise items and proceed to checkout.</p>
+      <div className="bg-white p-12 text-center rounded-3xl space-y-4 max-w-lg mx-auto my-12 border border-warm-grey-light shadow-sm">
+        <ShoppingBag className="w-12 h-12 text-print-red mx-auto" />
+        <h2 className="text-2xl font-extrabold text-ink">Your Shopping Cart</h2>
+        <p className="text-xs text-warm-grey">Please sign in to view your customized merchandise items and proceed to checkout.</p>
         <Link to="/login">
-          <Button size="lg">Sign In to View Cart</Button>
+          <Button size="lg" variant="primary">Sign In to View Cart</Button>
         </Link>
       </div>
     );
@@ -73,8 +73,8 @@ export const CartPage = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-16 gap-3">
-        <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-xs font-semibold text-slate-400">Calculating Cart Totals...</p>
+        <div className="w-10 h-10 border-4 border-print-red border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs font-semibold text-warm-grey">Calculating Cart Totals...</p>
       </div>
     );
   }
@@ -90,19 +90,19 @@ export const CartPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-white">Your Custom Cart</h1>
-          <p className="text-xs text-slate-400">Server-recalculated live totals & customized print specifications.</p>
+          <h1 className="text-3xl font-extrabold text-ink">Your Custom Cart</h1>
+          <p className="text-xs text-warm-grey">Server-recalculated live totals & customized print specifications.</p>
         </div>
-        <Link to="/products" className="inline-flex items-center gap-2 text-xs font-bold text-sky-400 hover:underline">
+        <Link to="/products" className="inline-flex items-center gap-2 text-xs font-bold text-ink hover:underline">
           <ArrowLeft className="w-4 h-4" /> Continue Shopping
         </Link>
       </div>
 
       {items.length === 0 ? (
-        <div className="glass-panel p-12 text-center rounded-3xl space-y-4 max-w-md mx-auto">
-          <ShoppingBag className="w-12 h-12 text-slate-600 mx-auto" />
-          <h3 className="text-xl font-bold text-white">Your Cart is Empty</h3>
-          <p className="text-xs text-slate-400">Explore our catalog and customize T-shirts, hoodies, mugs, and wall art.</p>
+        <div className="bg-white p-12 text-center rounded-3xl space-y-4 max-w-md mx-auto border border-warm-grey-light shadow-sm">
+          <ShoppingBag className="w-12 h-12 text-warm-grey mx-auto" />
+          <h3 className="text-xl font-extrabold text-ink">Your Cart is Empty</h3>
+          <p className="text-xs text-warm-grey">Explore our catalog and customize T-shirts, hoodies, mugs, and wall art.</p>
           <Link to="/products">
             <Button size="md" icon={Sparkles}>
               Explore Catalog
@@ -120,67 +120,67 @@ export const CartPage = () => {
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     {/* Item Thumbnail & Spec */}
                     <div className="flex items-center gap-4">
-                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shrink-0">
+                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-canvas border border-warm-grey-light shrink-0">
                         <img
                           src={product.images?.[0] || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800'}
                           alt={product.name || 'Merchandise Item'}
                           className="w-full h-full object-cover"
                         />
                         {item.designImageUrl && (
-                          <div className="absolute bottom-1 right-1 p-1 bg-slate-950/80 rounded-lg border border-slate-800" title="Custom Artwork Attached">
-                            <ImageIcon className="w-3 h-3 text-sky-400" />
+                          <div className="absolute bottom-1 right-1 p-1 bg-white/90 rounded-lg border border-warm-grey-light" title="Custom Artwork Attached">
+                            <ImageIcon className="w-3 h-3 text-ink" />
                           </div>
                         )}
                       </div>
 
                       <div className="space-y-1">
-                        <h3 className="font-bold text-white text-base">{product.name || 'Custom Merchandise'}</h3>
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                          <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-slate-300 font-semibold">
+                        <h3 className="font-extrabold text-ink text-base">{product.name || 'Custom Merchandise'}</h3>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-warm-grey">
+                          <span className="px-2 py-0.5 rounded-md bg-canvas border border-warm-grey-light text-ink font-bold">
                             Size: {item.size}
                           </span>
-                          <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-slate-300 font-semibold">
-                            <span className="w-2.5 h-2.5 rounded-full border border-slate-700" style={{ backgroundColor: item.color?.hex }}></span>
+                          <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-canvas border border-warm-grey-light text-ink font-bold">
+                            <span className="w-2.5 h-2.5 rounded-full border border-warm-grey-light" style={{ backgroundColor: item.color?.hex }}></span>
                             {item.color?.name}
                           </span>
-                          <Badge variant="purple">{item.printType}</Badge>
-                          <Badge variant="info">Zone: {item.printLocation}</Badge>
+                          <Badge variant="info">{item.printType}</Badge>
+                          <Badge variant="neutral">Zone: {item.printLocation}</Badge>
                         </div>
                       </div>
                     </div>
 
                     {/* Price & Quantity Controls */}
-                    <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-800">
+                    <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-warm-grey-light">
                       <div className="text-right">
-                        <span className="text-[10px] text-slate-500 uppercase font-semibold">Unit Price</span>
-                        <p className="font-extrabold text-slate-200 text-sm">₹{item.unitPrice}</p>
+                        <span className="text-[10px] text-warm-grey uppercase font-bold">Unit Price</span>
+                        <p className="font-extrabold text-ink text-sm">₹{item.unitPrice}</p>
                       </div>
 
                       {/* Quantity Controls */}
-                      <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl p-1">
+                      <div className="flex items-center gap-2 bg-canvas border border-warm-grey-light rounded-xl p-1">
                         <button
                           onClick={() => handleUpdateQuantity(item._id || item.id, item.quantity, -1)}
-                          className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                          className="p-1 rounded-lg text-warm-grey hover:text-ink hover:bg-warm-grey-subtle transition-colors"
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
-                        <span className="text-xs font-bold text-white px-2">{item.quantity}</span>
+                        <span className="text-xs font-extrabold text-ink px-2">{item.quantity}</span>
                         <button
                           onClick={() => handleUpdateQuantity(item._id || item.id, item.quantity, 1)}
-                          className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                          className="p-1 rounded-lg text-warm-grey hover:text-ink hover:bg-warm-grey-subtle transition-colors"
                         >
                           <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
 
                       <div className="text-right min-w-[70px]">
-                        <span className="text-[10px] text-slate-500 uppercase font-semibold">Line Total</span>
-                        <p className="font-extrabold text-white text-base">₹{item.lineTotal}</p>
+                        <span className="text-[10px] text-warm-grey uppercase font-bold">Line Total</span>
+                        <p className="font-extrabold text-ink text-base">₹{item.lineTotal}</p>
                       </div>
 
                       <button
                         onClick={() => handleRemoveItem(item._id || item.id)}
-                        className="p-2 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-slate-900 transition-colors"
+                        className="p-2 rounded-xl text-warm-grey hover:text-print-red hover:bg-warm-grey-subtle transition-colors"
                         title="Remove Item"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -194,39 +194,40 @@ export const CartPage = () => {
 
           {/* Order Summary & Live Recalculations */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="glass-panel p-6 rounded-3xl border border-slate-800 space-y-6 sticky top-28">
-              <h3 className="font-bold text-white text-lg border-b border-slate-800 pb-3">Order Summary</h3>
+            <div className="bg-white p-6 rounded-3xl border border-warm-grey-light space-y-6 sticky top-28 shadow-sm">
+              <h3 className="font-extrabold text-ink text-lg border-b border-warm-grey-light pb-3">Order Summary</h3>
 
-              <div className="space-y-3 text-sm text-slate-300">
+              <div className="space-y-3 text-sm text-ink font-bold">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Merchandise Subtotal</span>
-                  <span className="font-semibold text-white">₹{subtotal}</span>
+                  <span className="text-warm-grey font-medium">Merchandise Subtotal</span>
+                  <span>₹{subtotal}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Estimated Tax (18% GST)</span>
-                  <span className="font-semibold text-white">₹{tax}</span>
+                  <span className="text-warm-grey font-medium">Estimated Tax (18% GST)</span>
+                  <span>₹{tax}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Delhivery Express Shipping</span>
-                  <span className="font-semibold text-emerald-400">
+                  <span className="text-warm-grey font-medium">Delhivery Express Shipping</span>
+                  <span className="text-thread-green font-extrabold">
                     {shippingEstimate === 0 ? 'FREE Shipping' : `₹${shippingEstimate}`}
                   </span>
                 </div>
 
                 {subtotal > 0 && subtotal < 1500 && (
-                  <p className="text-[11px] text-sky-400 font-semibold bg-sky-500/10 p-2.5 rounded-xl border border-sky-500/20">
+                  <p className="text-[11px] text-ink font-bold bg-warm-grey-subtle p-2.5 rounded-xl border border-warm-grey-light">
                     Add ₹{1500 - subtotal} more for FREE shipping!
                   </p>
                 )}
 
-                <div className="pt-4 border-t border-slate-800 flex justify-between items-baseline">
-                  <span className="text-base font-extrabold text-white">Grand Total</span>
-                  <span className="text-2xl font-extrabold text-sky-400">₹{grandTotal}</span>
+                <div className="pt-4 border-t border-warm-grey-light flex justify-between items-baseline">
+                  <span className="text-base font-extrabold text-ink">Grand Total</span>
+                  <span className="text-2xl font-extrabold text-ink">₹{grandTotal}</span>
                 </div>
               </div>
 
               <Button
-                onClick={() => alert('Proceeding to Checkout Workflow!')}
+                onClick={() => navigate('/checkout')}
+                variant="primary"
                 fullWidth
                 size="lg"
                 icon={ArrowRight}
@@ -234,8 +235,8 @@ export const CartPage = () => {
                 Proceed to Checkout
               </Button>
 
-              <div className="flex items-center justify-center gap-2 text-slate-400 text-xs font-semibold pt-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <div className="flex items-center justify-center gap-2 text-warm-grey text-xs font-bold pt-2">
+                <ShieldCheck className="w-4 h-4 text-thread-green" />
                 <span>Verified 256-bit Encrypted Checkout</span>
               </div>
             </div>

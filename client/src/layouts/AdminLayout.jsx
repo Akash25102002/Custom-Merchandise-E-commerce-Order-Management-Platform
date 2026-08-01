@@ -16,19 +16,19 @@ export const AdminLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen flex bg-slate-950 text-slate-100">
+    <div className="min-h-screen flex bg-canvas text-ink">
       {/* Sidebar */}
-      <aside className="w-64 glass-panel border-r border-slate-800/80 flex flex-col justify-between p-6">
+      <aside className="w-64 bg-white border-r border-warm-grey-light flex flex-col justify-between p-6">
         <div className="space-y-8">
           {/* Logo & Admin Status */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/25">
-              <ShieldCheck className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-ink flex items-center justify-center text-canvas shadow-md">
+              <ShieldCheck className="w-5 h-5 text-canvas" />
             </div>
             <div>
-              <h2 className="font-extrabold text-white text-base">Admin Portal</h2>
-              <span className="text-[10px] text-sky-400 font-semibold tracking-wider uppercase">
-                ThreadCraft Command
+              <h2 className="font-extrabold text-ink text-base">Admin Portal</h2>
+              <span className="text-[10px] text-warm-grey font-bold tracking-wider uppercase">
+                ThreadCraft Control
               </span>
             </div>
           </div>
@@ -42,10 +42,10 @@ export const AdminLayout = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                     isActive
-                      ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20 shadow-md shadow-sky-500/5'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                      ? 'bg-ink text-canvas shadow-sm'
+                      : 'text-warm-grey hover:text-ink hover:bg-warm-grey-subtle'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -57,24 +57,24 @@ export const AdminLayout = () => {
         </div>
 
         {/* User Footer & Back to Store */}
-        <div className="space-y-4 pt-6 border-t border-slate-800/80">
+        <div className="space-y-4 pt-6 border-t border-warm-grey-light">
           <Link
             to="/"
-            className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-sky-400 transition-colors"
+            className="flex items-center gap-2 text-xs font-bold text-warm-grey hover:text-ink transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Return to Storefront</span>
           </Link>
-          <div className="flex items-center justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+          <div className="flex items-center justify-between bg-warm-grey-subtle p-3 rounded-2xl border border-warm-grey-light">
             <div className="flex items-center gap-2.5">
               <img
                 src={user?.avatar}
                 alt={user?.name}
-                className="w-8 h-8 rounded-full ring-2 ring-sky-500/40 object-cover"
+                className="w-8 h-8 rounded-full ring-2 ring-warm-grey-light object-cover"
               />
               <div className="text-left">
-                <p className="text-xs font-bold text-slate-200">{user?.name}</p>
-                <p className="text-[10px] text-emerald-400 font-medium">Administrator</p>
+                <p className="text-xs font-extrabold text-ink">{user?.name}</p>
+                <p className="text-[10px] text-thread-green font-bold">Administrator</p>
               </div>
             </div>
             <button
@@ -82,7 +82,7 @@ export const AdminLayout = () => {
                 logout();
                 navigate('/login');
               }}
-              className="text-slate-400 hover:text-rose-400 p-1"
+              className="text-warm-grey hover:text-print-red p-1 transition-colors"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />
