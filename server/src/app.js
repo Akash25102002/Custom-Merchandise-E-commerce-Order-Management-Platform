@@ -21,7 +21,7 @@ const adminRoutes = require('./modules/admin/admin.routes');
 const app = express();
 
 // Security HTTP headers
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // Logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -31,10 +31,13 @@ if (process.env.NODE_ENV === 'development') {
 // Global Rate Limiting
 app.use('/api', apiLimiter);
 
-// CORS configuration
+// Permissive CORS configuration for Vercel & local development
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow requests with no origin or any Vercel/localhost origin
+      return callback(null, true);
+    },
     credentials: true,
   })
 );

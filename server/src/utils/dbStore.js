@@ -13,9 +13,9 @@ class DBStore {
     return mongoose.connection.readyState === 1;
   }
 
-  async initDefaultData() {
-    const hashedAdminPass = await bcrypt.hash('Admin@123456', 12);
-    const hashedCustPass = await bcrypt.hash('Customer@123456', 12);
+  initDefaultData() {
+    const hashedAdminPass = bcrypt.hashSync('Admin@123456', 10);
+    const hashedCustPass = bcrypt.hashSync('Customer@123456', 10);
 
     const memoryAdmin = {
       _id: 'usr_admin_demo',
