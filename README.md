@@ -1,220 +1,279 @@
-# Custom Merchandise E-Commerce & Order Management Platform
+# ThreadCraft — Custom Merchandise E-commerce & Order Management Platform
 
-A production-quality, full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application engineered for custom merchandise creation, interactive design customization, real-time live price calculations, atomic inventory management, strict order state machine workflow enforcement, server-side verified payment processing, and public shipment tracking.
+A full-stack MERN application for a custom merchandise business. Customers
+browse products, customize artwork/prints, pay, and track orders through a
+real print-shop fulfillment workflow. Includes a separate admin panel for
+product, order, and fulfillment management.
 
----
-
-## 🚀 Key Highlights & Architectural Advantages
-
-- **Feature-Based Folder Structure**: Clean modular separation of concerns on both backend (`/server/src/modules/*`) and frontend (`/client/src/features/*`).
-- **Strict 10-Step Order State Machine**: Finite state machine enforcing workflow steps (`Order Placed` → `Payment Verified` → `Design Approved` → `Printing In Progress` → `Quality Check` → `Packed` → `Shipment Created` → `Shipped` → `Out for Delivery` → `Delivered`) with pre-print cancellation rules.
-- **Server-Side Verified Payments**: Razorpay & Stripe integration with mandatory server-side HMAC-SHA256 signature verification. Rejects unverified client-reported success and keeps order at `Order Placed`.
-- **Live Recalculation Engine**: Server-side cart total calculations (Subtotal, 18% GST Tax, Shipping) on every read and mutation — never trusting client-sent prices.
-- **Atomic Inventory Control**: Thread-safe stock decrements using MongoDB atomic operations (`$inc` and `$gte` stock guard hooks).
-- **MongoDB Aggregation Analytics**: Admin dashboard analytics calculated using native MongoDB aggregation pipelines (`$match`, `$group`, `$sum`).
-- **Public Courier Tracking**: Unauthenticated tracking lookup for shipments with realistic AWB numbers and checkpoint timelines.
+**Live app:** https://custom-merchandise-e-commerce-order.vercel.app
 
 ---
 
-## 🔑 Demo Credentials
+## Screenshots
 
-| Role | Email | Password | Access Rights |
-| :--- | :--- | :--- | :--- |
-| **Admin User** | `admin@threadcraft.com` | `Admin@123456` | Full Admin Dashboard, Catalog Management, State Machine Transitions, Courier Shipment Creation |
-| **Customer User** | `customer@threadcraft.com` | `Customer@123456` | Shopping, Interactive Studio, Cart Customization, Order Checkout, Order History |
-
----
-
-## 🛠️ Technology Stack
-
-- **Frontend**: React.js (Vite), React Router v6, Tailwind CSS, Zustand (State Management), Lucide Icons, Axios.
-- **Backend**: Node.js, Express.js, Mongoose (MongoDB ORM), JWT (Access + HttpOnly Refresh Tokens), bcryptjs, Multer, Express-Validator.
-- **Database**: MongoDB (with automatic in-memory repository store fallback if offline).
-- **Payment Gateways**: Razorpay / Stripe (with HMAC-SHA256 server verification).
-- **Shipping Provider**: Courier Provider Service (Shiprocket / Delhivery / Shippo response contract).
+| | |
+|---|---|
+| **Register** ![Register](./screenshots/01-register.png) | **Sign In (with one-click demo credentials)** ![Login](./screenshots/02-login.png) |
+| **Catalog** ![Catalog](./screenshots/03-catalog.png) | **Design Studio — product customizer** ![Customizer](./screenshots/04-customizer.png) |
+| **Cart — live server-recalculated totals** ![Cart](./screenshots/05-cart.png) | **Checkout** ![Checkout](./screenshots/06-checkout.png) |
+| **Order tracking timeline** ![Order Tracking](./screenshots/07-order-tracking.png) | **Admin fulfillment & analytics dashboard** ![Admin Dashboard](./screenshots/08-admin-dashboard.png) |
 
 ---
 
-## 📁 Monorepo Folder Structure
+## Tech Stack
+
+**Frontend:** React.js, React Router, Tailwind CSS, Zustand
+**Backend:** Node.js, Express.js
+**Database:** MongoDB (Atlas) with Mongoose
+**Auth:** JWT (access token + httpOnly refresh-token cookie)
+**Payments:** Razorpay
+**File uploads:** Multer (customer design/artwork uploads)
+**Hosting:** Vercel (frontend) + Render (backend) + MongoDB Atlas (database)
+
+---
+
+## Features
+
+### Customer
+- Register / login
+- Browse, search, and filter products by category, price, and print type
+- View product detail pages
+- Customize products: size, color, quantity, print type, print location,
+  design/artwork upload
+- Cart with live subtotal, tax, shipping, and total
+- Checkout and payment via Razorpay
+- Order history and real-time order status tracking (timeline view)
+- Cancel an order — only available before printing begins
+
+### Admin
+- Manage products and categories (CRUD)
+- View all customers
+- View and filter all orders by status
+- Advance order status through the fulfillment workflow (no skipping steps)
+- View payment details per order
+- Sales dashboard: revenue, order counts by status, low-stock alerts
+
+### Product types
+T-Shirts, Hoodies, Caps, Mugs, Bottles, Tote Bags, Stickers
+Print types: Screen Printing, DTF Printing, Sublimation, Embroidery, UV Printing
+
+### Order workflow
+```
+Order Placed → Payment Verified → Design Approved → Printing In Progress
+→ Quality Check → Packed → Shipment Created → Shipped → Out for Delivery
+→ Delivered
+```
+Transitions are enforced by a state machine — status can only move forward
+one step at a time; customers can cancel only before "Printing In Progress."
+
+---
+
+## Project Structure
 
 ```
-custom merchandise/
-├── client/                     # React Vite Single Page Application
-│   ├── src/
-│   │   ├── api/                # Axios instance with JWT interceptors
-│   │   ├── components/         # Shared UI components (Button, Modal, Card, Badge, Input)
-│   │   ├── features/           # Feature modules (auth, products, customizer, cart, orders, shipping, admin)
-│   │   ├── layouts/            # Customer & Admin Layout wrappers
-│   │   ├── routes/             # Route configurations & Protected/Admin Guards
-│   │   └── store/              # Zustand Auth Store with persistent state
-│   └── package.json
-│
-├── server/                     # Node.js Express Backend API Server
-│   ├── src/
-│   │   ├── config/             # MongoDB database connection
-│   │   ├── middleware/         # Auth JWT guard, Role checker, Error Handler, Upload, Express-Validator
-│   │   ├── models/             # Mongoose Schemas (User, Category, Product, Cart, Order, Payment, Shipping)
-│   │   ├── modules/            # Feature modules (auth, products, cart, orders, payments, shipping, admin)
-│   │   ├── utils/              # Order State Machine, Seeders, AppError, catchAsync, dbStore
-│   │   ├── app.js              # Express app mounting module routers
-│   │   └── server.js           # Server runner listening on port 5000
-│   └── package.json
-│
-├── .env.example                # Root documentation of environment variables
-└── README.md                   # Complete system documentation
+/client                 React frontend
+  /src
+    /components          Shared/reusable UI (Button, Modal, Card, Timeline...)
+    /features             auth, products, cart, orders, admin
+    /layouts               CustomerLayout, AdminLayout
+    /routes                Route config, ProtectedRoute, AdminRoute
+    /store                 Zustand slices (auth, cart)
+    /api                   Axios instance + per-feature API calls
+
+/server                  Express backend
+  /config                 DB connection, service config
+  /modules                auth, products, categories, cart, orders,
+                          payments, shipping, admin
+  /middleware              auth (JWT), role-check, error handler, upload
+  /utils
+  app.js
+  server.js
 ```
 
 ---
 
-## ⚙️ Environment Variables Reference
+## Getting Started (local setup)
 
-### Backend (`/server/.env`)
-```env
-PORT=5000
-NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/custom_merchandise
+### Prerequisites
+- Node.js 18+
+- A MongoDB Atlas connection string (or local MongoDB instance)
+- A Razorpay account (test mode is fine) with API keys
 
-# JWT Secrets
-JWT_ACCESS_SECRET=prod_merchandise_access_secret_key_32bytes_long_string!
-JWT_REFRESH_SECRET=prod_merchandise_refresh_secret_key_32bytes_long_string!
-JWT_ACCESS_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
-
-# Payment Gateways (Optional)
-RAZORPAY_KEY_ID=rzp_test_mock_key
-RAZORPAY_KEY_SECRET=rzp_mock_secret
-STRIPE_SECRET_KEY=sk_test_mock_key
-```
-
-### Frontend (`/client/.env`)
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
----
-
-## 📦 Local Installation & Setup Steps
-
-### 1. Clone & Install Dependencies
+### 1. Clone the repository
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/custom-merchandise.git
-cd "custom merchandise"
+git clone <your-repo-url>
+cd <repo-folder>
+```
 
-# Install backend dependencies
+### 2. Backend setup
+```bash
 cd server
 npm install
-
-# Install frontend dependencies
-cd ../client
-npm install
-```
-
-### 2. Seed Database & Demo Accounts
-To populate demo users (`admin@threadcraft.com` and `customer@threadcraft.com`) and sample merchandise products with options:
-```bash
-cd server
-node src/utils/seedAdmin.js
-```
-
-### 3. Run Development Servers
-```bash
-# Terminal 1: Run Express Server (Port 5000)
-cd server
+cp .env.example .env    # then fill in the values, see below
 npm run dev
+```
 
-# Terminal 2: Run Client Vite App (Port 5173)
+### 3. Frontend setup
+```bash
 cd client
+npm install
+cp .env.example .env    # then fill in the values, see below
 npm run dev
 ```
 
----
+The frontend runs on `http://localhost:5173` (Vite) and the backend on
+`http://localhost:5000` by default — adjust as needed for your setup.
 
-## 📡 Complete API Documentation
-
-### Authentication Module (`/api/auth`)
-| Method | Endpoint | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Public | Customer self-registration (forces `role: 'customer'`) |
-| `POST` | `/api/auth/login` | Public | Authenticate user, returns Access Token + HttpOnly Refresh Cookie |
-| `POST` | `/api/auth/refresh` | Public | Refresh expired access token via HttpOnly cookie |
-| `POST` | `/api/auth/logout` | Public | Clear refresh token cookie |
-| `GET` | `/api/auth/me` | Protected | Fetch currently logged-in user profile & addresses |
-
-### Product & Category Module (`/api/products`)
-| Method | Endpoint | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/products` | Public | Paginated product catalog with search, category/price/printType filters |
-| `GET` | `/api/products/:id` | Public | Fetch product detail with available sizes, colors, and print types |
-| `POST` | `/api/products` | Admin | Create product with Multer image upload |
-| `PUT` | `/api/products/:id` | Admin | Update product details |
-| `DELETE` | `/api/products/:id` | Admin | Soft delete product (`isActive: false`) |
-
-### Customization & Cart Module (`/api/cart`)
-| Method | Endpoint | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/cart` | Protected | Fetch user's cart with live recalculation of subtotal, tax, shipping |
-| `POST` | `/api/cart` | Protected | Add customized item (validates size/color/printType against product specs) |
-| `PUT` | `/api/cart/:itemId` | Protected | Modify item quantity or print specifications |
-| `DELETE` | `/api/cart/:itemId` | Protected | Remove item from cart |
-| `POST` | `/api/cart/upload-artwork` | Protected | Upload customer artwork design file (Multer image filter) |
-
-### Order & State Machine Module (`/api/orders`)
-| Method | Endpoint | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/orders` | Protected | Snapshot cart items, atomic stock reduction, clear cart, set initial status `Order Placed` |
-| `GET` | `/api/orders` | Protected | List orders (Customer gets own; Admin gets all filterable by status) |
-| `GET` | `/api/orders/:id` | Protected | Detailed order view with status history & next valid state transitions |
-| `PATCH` | `/api/orders/:id/status` | Admin | Transition order status using strict state machine rules |
-| `PATCH` | `/api/orders/:id/cancel` | Customer | Cancel order (allowed ONLY before `Printing In Progress`) |
-
-### Payments Module (`/api/payments`)
-| Method | Endpoint | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/payments/create` | Protected | Create payment gateway order/session (`Pending` status) |
-| `POST` | `/api/payments/verify` | Protected | Server-side HMAC-SHA256 signature verification; advances order to `Payment Verified` on success |
-
-### Shipping & Tracking Module (`/api/shipping`)
-| Method | Endpoint | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/shipping/create` | Admin | Create courier shipment (Delhivery/Shiprocket format); transitions order to `Shipment Created` |
-| `GET` | `/api/shipping/:trackingId` | **Public** | Public tracking lookup by AWB number (no login required) |
-
-### Admin Analytics Module (`/api/admin`)
-| Method | Endpoint | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/admin/dashboard-stats` | Admin | MongoDB aggregation pipeline returning paid revenue, order breakdown, and low stock items |
-
----
-
-## 🔄 Strict Order Workflow State Machine
-
-The order pipeline enforces strict sequential transitions. Any attempt to skip steps or move backward is rejected by the backend state machine utility:
-
-```
-[Order Placed] ──> [Payment Verified] ──> [Design Approved] ──> [Printing In Progress]
-       │                   │                     │                        │
-       ├──(Cancelable)─────┼──(Cancelable)───────┴──(Cancelable)──────────┤ (NON-CANCELABLE)
-       v                   v                                              v
-  [Cancelled]         [Cancelled]                                  [Quality Check]
-                                                                          │
-                                                                          v
-[Delivered] <── [Out for Delivery] <── [Shipped] <── [Shipment Created] <── [Packed]
+### 4. Seed the database (demo admin + sample products)
+```bash
+cd server
+npm run seed
 ```
 
 ---
 
-## 💡 Strategic Bonus Features Recommendation
+## Environment Variables
 
-For maximum graded value with minimal engineering effort, we recommend prioritizing bonus features in the following order:
+### `/server/.env`
+| Variable | Description |
+|---|---|
+| `PORT` | Port the Express server runs on (e.g. `5000`) |
+| `MONGO_URI` | MongoDB Atlas connection string |
+| `JWT_SECRET` | Secret for signing access tokens |
+| `JWT_REFRESH_SECRET` | Secret for signing refresh tokens |
+| `JWT_ACCESS_EXPIRES_IN` | Access token lifetime (e.g. `15m`) |
+| `JWT_REFRESH_EXPIRES_IN` | Refresh token lifetime (e.g. `7d`) |
+| `RAZORPAY_KEY_ID` | Razorpay Key ID (test or live — must match secret's mode) |
+| `RAZORPAY_KEY_SECRET` | Razorpay Key Secret (same mode as Key ID above) |
+| `CLIENT_URL` | Deployed frontend URL, used for CORS (e.g. the Vercel URL) |
+| `COOKIE_SAMESITE` | `none` in production (cross-domain), `lax` in local dev |
+| `COOKIE_SECURE` | `true` in production, `false` in local dev over http |
 
-1. **Email Notifications on Order Status Change (Highest Value / Low Effort)**
-   - *Rationale*: Integrates seamlessly into `transitionOrderStatus` using `nodemailer` to trigger automated status emails (`Order Placed`, `Shipped`, `Delivered`).
-2. **Product Reviews & Ratings (High Value / Medium Effort)**
-   - *Rationale*: Extends `Product` schema with a `reviews[]` embedded array (`user`, `rating`, `comment`, `createdAt`) and recalculates `ratingsAverage`.
-3. **Coupons & Discount Codes (Medium Value / Low Effort)**
-   - *Rationale*: Adds a `Coupon` model (`code`, `discountPercentage`, `expiresAt`) and evaluates discounts inside `Cart.recalculateTotals()`.
-4. **Docker Compose Setup (Medium Value / Low Effort)**
-   - *Rationale*: A simple `docker-compose.yml` spinning up MongoDB, Server, and Client containers in one command.
-#   C u s t o m - M e r c h a n d i s e - E - c o m m e r c e - O r d e r - M a n a g e m e n t - P l a t f o r m  
- 
+### `/client/.env`
+| Variable | Description |
+|---|---|
+| `VITE_API_BASE_URL` | Deployed backend URL (Render), e.g. `https://your-backend.onrender.com/api` |
+| `VITE_RAZORPAY_KEY_ID` | Razorpay **public** Key ID only — never the secret |
+
+> ⚠️ Never commit real `.env` files. Only `.env.example` (with placeholder
+> values) should be checked into the repository.
+
+---
+
+## API Documentation
+
+### Auth
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/api/auth/register` | Public | Register a new customer |
+| POST | `/api/auth/login` | Public | Log in, returns access token + sets refresh cookie |
+| POST | `/api/auth/refresh` | Refresh cookie | Issue a new access token |
+| POST | `/api/auth/logout` | Auth required | Clear refresh cookie |
+| GET | `/api/auth/me` | Auth required | Get current user |
+
+### Products
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/api/products` | Public | List products (search, filter, paginate) |
+| GET | `/api/products/:id` | Public | Product detail |
+| POST | `/api/products` | Admin | Create product |
+| PUT | `/api/products/:id` | Admin | Update product |
+| DELETE | `/api/products/:id` | Admin | Soft-delete product |
+
+### Categories
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/api/categories` | Public | List categories |
+| POST | `/api/categories` | Admin | Create category |
+| PUT / DELETE | `/api/categories/:id` | Admin | Update / remove category |
+
+### Cart
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/api/cart` | Customer | Get current cart (server-recalculated totals) |
+| POST | `/api/cart` | Customer | Add item (with customization) |
+| PUT | `/api/cart/:itemId` | Customer | Update quantity/customization |
+| DELETE | `/api/cart/:itemId` | Customer | Remove item |
+
+### Orders
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/api/orders` | Customer | Create order from cart |
+| GET | `/api/orders` | Customer/Admin | List own orders (customer) or all orders (admin) |
+| GET | `/api/orders/:id` | Customer/Admin | Order detail |
+| PATCH | `/api/orders/:id/status` | Admin | Advance order status (state-machine enforced) |
+| PATCH | `/api/orders/:id/cancel` | Customer | Cancel (only before "Printing In Progress") |
+
+### Payments
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/api/payments/create` | Customer | Create a Razorpay order |
+| POST | `/api/payments/verify` | Customer | Verify signature, advance order status |
+
+### Shipping
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/api/shipping/create` | Admin | Create shipment, generate tracking number |
+| GET | `/api/shipping/:trackingId` | Public | Track a shipment |
+
+### Admin
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/api/admin/dashboard-stats` | Admin | Revenue, order counts, low-stock products |
+
+---
+
+## Sample Request/Response
+
+**POST `/api/payments/verify`**
+```json
+// Request
+{
+  "razorpay_order_id": "order_XXXXXXXXXXXX",
+  "razorpay_payment_id": "pay_XXXXXXXXXXXX",
+  "razorpay_signature": "generated_signature_hash",
+  "orderId": "665f1c2e8a1b2c0012a3f9d1"
+}
+
+// Response (200)
+{
+  "success": true,
+  "orderStatus": "Payment Verified",
+  "paymentStatus": "Successful"
+}
+```
+
+---
+
+## Demo Credentials
+
+The live sign-in page includes **one-click demo login buttons** ("Demo Customer" /
+"Demo Admin") that auto-fill credentials — a reviewer doesn't need to type
+anything. Underlying seeded accounts:
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `<seeded admin email>` | `<seeded admin password>` |
+| Customer | `customer@threadcraft.com` | `<seeded customer password>` |
+
+> Fill in the actual seeded values from your `seed` script before sharing this README.
+
+---
+
+## Deployment
+
+| Layer | Platform | Notes |
+|---|---|---|
+| Frontend | Vercel | Root directory: `client` |
+| Backend | Render | Root directory: `server` |
+| Database | MongoDB Atlas | Network access must allow Render's outbound IPs |
+| Payments | Razorpay | Test mode — Key ID/Secret pair must match dashboard mode |
+
+After any environment variable change on Render or Vercel, trigger a
+**manual redeploy** — env vars are picked up at build/start time, not live.
+
+---
+
+## License
+
+This project was built as a technical assessment submission.
