@@ -1,4 +1,4 @@
-# ThreadCraft — Custom Merchandise E-commerce & Order Management Platform
+<img width="1360" height="768" alt="Screenshot (252)" src="https://github.com/user-attachments/assets/26396639-f3bc-4013-872e-2af5a4692943" /># ThreadCraft — Custom Merchandise E-commerce & Order Management Platform
 
 A full-stack MERN application for a custom merchandise business. Customers
 browse products, customize artwork/prints, pay, and track orders through a
@@ -13,7 +13,8 @@ product, order, and fulfillment management.
 
 | | |
 |---|---|
-| **Register** ![Register](./screenshots/01-register.png) | **Sign In (with one-click demo credentials)** ![Login](./screenshots/02-login.png) |
+| **Register** <img width="1360" height="768" alt="Screenshot (251)" src="https://github.com/user-attachments/assets/fd97d877-8e75-4fec-a561-4cbc90b666e7" />
+| **Sign In (with one-click demo credentials)** ![Login](./screenshots/02-login.png) |
 | **Catalog** ![Catalog](./screenshots/03-catalog.png) | **Design Studio — product customizer** ![Customizer](./screenshots/04-customizer.png) |
 | **Cart — live server-recalculated totals** ![Cart](./screenshots/05-cart.png) | **Checkout** ![Checkout](./screenshots/06-checkout.png) |
 | **Order tracking timeline** ![Order Tracking](./screenshots/07-order-tracking.png) | **Admin fulfillment & analytics dashboard** ![Admin Dashboard](./screenshots/08-admin-dashboard.png) |
